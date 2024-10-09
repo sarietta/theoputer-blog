@@ -1,0 +1,56 @@
+baseurl: https://example.com/
+languageCode: en-us
+theme: hugo-theme-stack
+title: An 8Bit Computer
+copyright: Sean Arietta
+
+params:
+    mainSections:
+        - posts
+    toc: true
+    math: true
+    article:
+        headingAnchor: true
+        toc: true
+        readingTime: true
+        tableOfContents:
+          other: Table of contents
+    sidebar:
+        compact: false
+        emoji:
+        subtitle:
+        avatar:
+            enabled: true
+            local: true
+            src: img/avatar.png
+    widgets:
+      page:
+        - type: toc
+
+markup:
+  defaultMarkdownHandler: goldmark
+  goldmark:
+    parser:
+      attribute:
+        block: true
+    extensions:
+      extras:
+        mark:
+          enable: true
+        insert:
+          enable: true
+        delete:
+          enable: true
+        superscript:
+          enable: true
+      passthrough:
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - \(
+            - \)
+        enable: true
