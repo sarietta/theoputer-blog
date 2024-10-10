@@ -76,14 +76,13 @@ first question to ask is whether we should interrupt what we're doing
 
 Naturally, you might say, stop as soon as possible. This is also what
 I had in my mind, but then I started thinking about the
-[Instruction Microcoder]({{< ref "instruction-microcoder"
->}}). Theoretically the soonest we could be interrupted is at the next
-clock cycle. For reasons noted above, we can't respond faster than
-that. But the _next_ clock cycle is very likely not the _next_
-instruction, because every instruction is actually a sequence of
-micro-instructions. Each micro-instruction executes in a clock cycle,
-but an instruction may take as many as 16 clock cycles to execute in
-the limit.
+[Instruction Microcoder](). Theoretically the soonest we could be
+interrupted is at the next clock cycle. For reasons noted above, we
+can't respond faster than that. But the _next_ clock cycle is very
+likely not the _next_ instruction, because every instruction is
+actually a sequence of micro-instructions. Each micro-instruction
+executes in a clock cycle, but an instruction may take as many as 16
+clock cycles to execute in the limit.
 
 ![Instructions](img/2x/instructions@2x.png)
 {class="center"}
