@@ -1,7 +1,7 @@
-baseurl: https://sarietta.com/theoputer
+baseurl: https://theoputer.sarietta.com
 languageCode: en-us
 theme: hugo-theme-stack
-title: An 8Bit Computer
+title: Theoputer
 copyright: Sean Arietta
 
 params:
@@ -18,7 +18,7 @@ params:
     sidebar:
         compact: false
         emoji:
-        subtitle:
+        subtitle: An 8Bit Computer
         avatar:
             enabled: true
             local: true
