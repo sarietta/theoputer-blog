@@ -349,7 +349,7 @@ function and jumped back.
 At the moment when the PC return addressed gets saved we can save a
 bit that indicates we are in the IRQ processing stage(s):
 
-![DO_IRQ Set](img/do-irq-set.png)
+![DO_IRQ Set](img/2x/do-irq-set@2x.png)
 {class="center"}
 
 Recall that this happens right after the CPU enters an up-clock
@@ -359,7 +359,7 @@ phase. Since we want to execute a (special) instruction, we want to
 detect that we just entered into the IRQ processing stages
 (i.e. ~~DO_IRQ~~ is HI) and the next down-clock just happened:
 
-![Down-Clock Phase](img/down-clock-phase.png)
+![Down-Clock Phase](img/2x/down-clock-phase@2x.png)
 {class="center"}
 
 This is an important moment to call out. This moment when the clock
@@ -412,7 +412,7 @@ handling code to be located in the first 256 bytes of the program. In
 fact, we could put another single instruction at that location to jump
 to some other, arbitrary address if we want. The sky's the limit.
 
-![Load IRQ Address](img/load-irq-address.png)
+![Load IRQ Address](img/2x/load-irq-address@2x.png)
 {class="center"}
 
 Here you see the addition of yet another control line:
@@ -430,7 +430,7 @@ not too complicated, especially because of the Bob Ross happiness. We
 just need to tell the CPU to execute microcode instruction ==JMP==
 (`0xf***`) and provide the IRQ Address as the value in `0x***`.
 
-![IRQ Jump Output](img/irq-jump-output.png)
+![Special Instruction](img/2x/special-instruction@2x.png)
 {class="center"}
 
 > Just a quick note that the value `0xf***` (`1111 **** **** ****`)
