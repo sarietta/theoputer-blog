@@ -11,28 +11,28 @@ the time being some of this content may not make the most sense.
 
 ## Introduction
 
-In the Theoputer V4 there is no IRQ. This is _ok_, but it does limit
+In the Theoputer V4 there is no IRQ. This is *ok*, but it does limit
 some of the things we can do. Perhaps more importantly, all "modern"
 CPUs rely heavily on interrupts. That's not coincidence. Interrupts
 are very useful. If we want our CPU to know that it should respond to
 some external "thing", then we have two options:
 
-1. At some interval we *poll* a signal and when that signal is at some
+1. At some interval we **poll** a signal and when that signal is at some
 predefined state (i.e. LO or HI), we take action
 2. We have the "thing" tell our CPU when it wants our CPU to take
 action
 
 While the polling is, in most cases, the easiest to implement, it's
 hopefully obvious that it will be slow and clunky in most
-cases. That's because we really want the "thing" to *push* information
-to us. We don't want to *pull* data from it. In cases where we want a
-*push*-like operation, we need some way for the "thing" to *interrupt*
-the CPU on-demand.
+cases. That's because we really want the "thing" to **push**
+information to us. We don't want to **pull** data from it. In cases
+where we want a **push**-like operation, we need some way for the
+"thing" to **interrupt** the CPU on-demand.
 
 This on-demand kind of interruption is exactly what and Interrupt
 Request is for. The name is painfully obvious.
 
-The complexity here is about _how_ the CPU can allow itself to be
+The complexity here is about *how* the CPU can allow itself to be
 interrupted, correctly. In a polling situation, the solution is fairly
 easy to write down: after every N instructions, check some signal line
 and respond.
@@ -42,8 +42,8 @@ complex.
 
 ## There is Always a Delay
 
-One thing that eventually occurred to me is that there is *always a
-delay* between the interrupt request from the "thing" and the CPU.
+One thing that eventually occurred to me is that there is **always a
+delay** between the interrupt request from the "thing" and the CPU.
 
 That is, because, fundamentally the CPU chops up time into short
 blocks of time, based on the clock. The CPU cannot understand anything
@@ -53,7 +53,7 @@ than those blocks.
 ![Clock Cycle](img/2x/clock-cycle@2x.png)
 {class="center"}
 
-Imagine that the "thing" wants to interrupt our CPU *twice* within
+Imagine that the "thing" wants to interrupt our CPU **twice** within
 that blue section of time. Well there's nothing the CPU could ever do
 to satisfy both requests; the CPU is fundamentally limited by this
 speed.
@@ -63,23 +63,23 @@ speed.
 
 In this case there is no hope for the CPU. It will always miss one of
 these interrupts. Which one will depend on the circuitry employed, but
-it _must_ miss one of them because the CPU doesn't understand events
+it *must* miss one of them because the CPU doesn't understand events
 that happen this quickly.
 
 ## How Much Delay?
 
 There's no way to fully prevent interrupt request processing delays,
-so how _much_ delay will there be? I looked around to try to see what
+so how *much* delay will there be? I looked around to try to see what
 other CPUs do. The results of that search weren't too rewarding. The
 first question to ask is whether we should interrupt what we're doing
-*as soon as possible* or wait a little bit.
+**as soon as possible** or wait a little bit.
 
 Naturally, you might say, stop as soon as possible. This is also what
 I had in my mind, but then I started thinking about the
 [Instruction Microcoder](). Theoretically the soonest we could be
 interrupted is at the next clock cycle. For reasons noted above, we
-can't respond faster than that. But the _next_ clock cycle is very
-likely not the _next_ instruction, because every instruction is
+can't respond faster than that. But the *next* clock cycle is very
+likely not the *next* instruction, because every instruction is
 actually a sequence of micro-instructions. Each micro-instruction
 executes in a clock cycle, but an instruction may take as many as 16
 clock cycles to execute in the limit.
@@ -106,37 +106,37 @@ address register.
 
 If we look at the example of the interrupt request above, we see that
 the request comes after step (1) and before step (2) -- note that the
-control lines that setup the operations listed happen on the *down
-clock*.
+control lines that setup the operations listed happen on the **down
+clock**.
 
-This _might_ be ok for this instruction. We could just jump back to
+This *might* be ok for this instruction. We could just jump back to
 the start of \(I_t\) and run it again. But what if we have an
 instruction that changes some data inside the CPU on a temporary
 basis? Technically changing memory address register in step (1) is
 such a change. If some part of the interrupt handling code depends on
 the memory address register being set to a known non-intermediate
-value, then we would have a problem. That's _very_ unlikely in this
+value, then we would have a problem. That's *very* unlikely in this
 specific case, but it's almost a certainty for the very complex
 ==PSHA== instruction (i.e. [Push A to Stack]()).
 
 So we cannot handle the interrupt as soon as it comes in. We must
-*wait* until we're done with the current instruction. then the CPU
+**wait** until we're done with the current instruction. then the CPU
 will be at a known good state (nothing intermediate). Once we are done
 with the interrupt handling code, we just need to jump to what would
-have been the _next_ instruction.
+have been the *next* instruction.
 
 ## What's the Next Instruction?
 
 We have to wait to handle the interrupt request until the next
 instruction, i.e. until the current instruction's micro-instructions
-finish. But what is the _next_ instruction? In many cases we could
+finish. But what is the *next* instruction? In many cases we could
 assume that's just \(PC + 1\). But not all cases!
 
 There are several instructions that perform jump-like operations
 (e.g. ==JMP==, ==BEQ==). If we're in the middle of one of those
 instructions, we cannot assume the next instruction (after handling
 the interrupt) is \(PC + 1\). So we need to let the program counter
-micro-instruction happen _first_, then we save the program counter,
+micro-instruction happen *first*, then we save the program counter,
 and then we jump to the interrupt handler before the CPU actually
 executes the instruction in the program counter.
 
@@ -157,9 +157,9 @@ provided in the ==JMP 0x28== instruction (`0x28`) to be output to the
 DBUS. On the up-clock phase, the PC is loaded with the data on the
 DBUS, thus setting \(PC_{t+1} = \textrm{0x28}\).
 
-To return to the _next_ instruction after the one that was executing
+To return to the *next* instruction after the one that was executing
 when the interrupt request happened, we need to store the value of PC
-*right before the next down-clock phase* after the last
+**right before the next down-clock phase** after the last
 micro-instruction of an instruction. Fortunately, there are only two
 such micro-instructions that do this, (1) either the PC step control
 line is enabled to ensure \(PC_{t+1} = PC_t + 1\) or (2) the PC input
@@ -169,7 +169,7 @@ control line is set to ensure \(PC_{t+1} = DBUS_{t}\).
 
 We now have the parts we need to put together the interrupt request
 (IRQ) functionality. But it's helpful to think of the entire IRQ
-functionality as a *sequence* of steps. The word sequence here is
+functionality as a **sequence** of steps. The word sequence here is
 doing some heavy lifting, because we truly need to do things in
 sequential order, with no possibility for parallelism.
 
@@ -199,7 +199,7 @@ We can offload the complexity in 6-9 by relying on the "operating
 system" to handle ensuring the correct instructions exist in the IRQ
 handler. So if we pre-program our instructions such that at address
 `0x40` there is a sequence of instructions that perform steps 6-9,
-then we needn't worry about circuitry for those. That's _exactly_ the
+then we needn't worry about circuitry for those. That's *exactly* the
 assumption we'll make. In effect, we are handling the IRQ in software
 versus in hardware, and hardware is hard, so that's probably a good
 thing.
@@ -280,7 +280,7 @@ address.
 ![IRQ Stage 3.1](img/irq-stage-3.1.png)
 {class="center"}
 
-That's four gates the signal has to go through. To be _very_ certain,
+That's four gates the signal has to go through. To be *very* certain,
 we can look at the delays for these gates (SN74HCT00):
 
 ![SN74HCT00 Delays](img/SN74HCT00-delays.png)
@@ -319,7 +319,7 @@ While we are executing our special instruction(s) to deal with the
 interrupt request we need the CPU to avoid executing any other
 instructions. I was compelled at first to take the "easiest" route and
 think of a way to inhibit the clock or bring the ~~HLT~~ signal HI,
-but none of those tricks really work because we need to execute _some_
+but none of those tricks really work because we need to execute *some*
 instructions just not the ones that in the running program. So we
 don't want to mess with how the CPU is running, we just need it to
 pause reading and executing from program memory until we're done with
@@ -364,7 +364,7 @@ detect that we just entered into the IRQ processing stages
 
 This is an important moment to call out. This moment when the clock
 goes low is the moment when we need to disable the Instruction
-Register (IR), disable the microcode counter, _and_ load our special
+Register (IR), disable the microcode counter, *and* load our special
 instruction to jump to the IRQ handling code. Otherwise the CPU would
 effectively stall out. If we disabled the IR, the microcode counter,
 and didn't load any other instructions, then the CPU will do exactly
@@ -422,7 +422,7 @@ load in the IRQ handler address from the data bus.
 > A quick refresher/note that we're using NOR gates with the ~~^CLK^~~
 signal, which creates a clock pulse on the up-clock transition. So
 this IRQ Address Register will be loaded in the up-clock phase in
-accordance with the *very important* principle that control lines are
+accordance with the **very important** principle that control lines are
 set in the down-clock phase, data is latched in the up-clock phase.
 
 Now we just need to "simulate" a ==JMP IRQ_ADDR== instruction. This is
@@ -460,7 +460,7 @@ everything on the next down-clock phase so that the normal execution
 loop can take back over. This was surprisingly challenging to
 orchestrate correctly. Here is the circuit (for now):
 
-![Return to Normal Execution](img/return-to-normal-execution.png)
+![Return to Normal Execution](img/2x/return-to-normal-execution@2x.png)
 {class="center"}
 
 Most of the challenge here is in avoiding race conditions. We need all

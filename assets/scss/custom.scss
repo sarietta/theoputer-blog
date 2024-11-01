@@ -1,6 +1,10 @@
 .article-page {
   .main-article {
     .article-content {
+      td, th {
+        text-align: center !important;
+      }
+
       .center {
         display: flex;
         justify-content: center;
@@ -9,6 +13,13 @@
       .small {
         img {
           width: 50%;
+        }
+      }
+
+      .padded-white {
+        img {
+          padding: 1.5em;
+          background-color: #fff;
         }
       }
 
