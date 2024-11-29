@@ -1,0 +1,16 @@
+.container {
+  width: 80%;
+
+  canvas {
+    margin: 20px;
+  }
+
+  mat-slider {
+    width: 80%;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+  }
+}

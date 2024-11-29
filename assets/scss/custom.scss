@@ -23,6 +23,12 @@
         }
       }
 
+      .small {
+        img {
+          max-width: 50%;
+        }
+      }
+
       mark, del {
         text-decoration: none;
         font-family: monospace;
