@@ -182,7 +182,7 @@ waves back to the oscillator. This is a messy situation. It's hard to
 describe exactly the result, but Wikimedia Commons has this rather
 nice animation for the approximate result:
 
-![Yuta Aoki, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons](img/transmission-line-reflections/Harmonic_Standing_wave.gif)
+![Yuta Aoki, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons](img/transmission-line-reflections/Harmonic_Standing_Wave.gif)
 {class="center padded-white"}
 
 Here we see a wave traveling to the right in red, the reflection
