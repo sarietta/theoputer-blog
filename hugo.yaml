@@ -26,6 +26,23 @@ params:
     widgets:
       page:
         - type: toc
+    comments:
+      enabled: true
+      provider: giscus
+      giscus:
+        repo: sarietta/theoputer-blog
+        repoID: R_kgDOM9miAg
+        category: General
+        categoryID: DIC_kwDOM9miAs4Clnfg
+        mapping: title
+        strict: 1
+        lightTheme: light
+        darkTheme: dark
+        reactionsEnabled: 1
+        emitMetadata: 0
+        inputPosition: top
+        lang: en
+
 
 markup:
   defaultMarkdownHandler: goldmark
