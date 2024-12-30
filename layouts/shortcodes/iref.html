@@ -1,5 +1,5 @@
 {{$page := .Site.GetPage (.Get 0) }}
-{{ if $page }}
+{{ if and $page (not $page.Draft) }}
 {{ $page.Path }}
 {{ else }}
 #missing

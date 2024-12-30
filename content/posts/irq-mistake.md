@@ -6,7 +6,7 @@ draft = false
 
 ## Introduction
 
-When we covered [Integrating IRQ0]({{<iref "/integrating-irq0">}}) it
+When we covered [Integrating IRQ0]({{<iref "integrating-irq0">}}) it
 may have been obvious that there were a lot of synchronization issues
 to deal with. I certainly underestimated how challening that would
 be. Going through one of the more subtle issues inspired the post

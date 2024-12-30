@@ -8,7 +8,7 @@ draft = false
 
 Whoooo boy. This one was a real challenge for me, an amatuer computer
 engineer. As I was working through the issues in the
-[IRQ Mistake]({{<iref "irqs-mistake" >}}), I realized that the real
+[IRQ Mistake]({{<iref "irq-mistake" >}}), I realized that the real
 issue was much deeper than I had expected.
 
 I spent the better part of two weeks attempting to figure out why my
