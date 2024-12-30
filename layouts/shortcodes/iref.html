@@ -1,0 +1,6 @@
+{{$page := .Site.GetPage (.Get 0) }}
+{{ if $page }}
+{{ $page.Path }}
+{{ else }}
+#missing
+{{ end }}

@@ -470,7 +470,7 @@ instruction.
 
 There was a particularly nasty race condition that I discovered in the
 V1 circuit, which used only SR latches, that I documented in
-[Modeling Reality is Hard]({{< ref "modeling-reality-is-hard" >}}).
+[Modeling Reality is Hard]({{<iref "modeling-reality-is-hard" >}}).
 
 ## Closing Thoughts
 

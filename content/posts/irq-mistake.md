@@ -1,19 +1,19 @@
 +++
 title = 'Irq Mistake'
 date = 2024-10-11T20:05:01-07:00
-draft = true
+draft = false
 +++
 
 ## Introduction
 
-When we covered [Integrating IRQ0]({{< ref "integrating-irq0" >}}) it
+When we covered [Integrating IRQ0]({{<iref "/integrating-irq0">}}) it
 may have been obvious that there were a lot of synchronization issues
 to deal with. I certainly underestimated how challening that would
 be. Going through one of the more subtle issues inspired the post
-[Modeling Reality is Hard]({{< ref "modeling-reality-is-hard" >}}).
+[Modeling Reality is Hard]({{<iref "modeling-reality-is-hard" >}}).
 
 We'll look at another issue that came up as I was writing the content
-for [Integrating IRQ0]({{< ref "integrating-irq0" >}}), which made me
+for [Integrating IRQ0]({{<iref "integrating-irq0" >}}), which made me
 appreciate this process of documentation that I have been rather
 loathe to do.
 
@@ -82,7 +82,7 @@ There are two SR latches in this schematic. One is saving the state of
 the ~~↑CLK_STAGE~~ signal and the other saves the state of the
 ~~DO_IRQ~~ signal. In effect, the two latches tell us what stage of
 the interrupt request sequence we are in (see
-[Integrating IRQ0: IRQ Stages]({{< ref "integrating-irq0#irq-stages"
+[Integrating IRQ0: IRQ Stages]({{<iref "integrating-irq0#irq-stages"
 >}}) for details on that).
 
 Let's consider the timing diagram for the entire interrupt
@@ -185,7 +185,7 @@ circuit that is faded out is also important. It ensures that we don't
 start handling the interrupt request via ~~DO_IRQ~~ until we both
 received the signal on ~~IRQ0~~ and we have _just_ processed a
 step-like operation. If you're questioning why we need that, reread
-[Integrating IRQ0: What's the Next Instruction]({{< ref
+[Integrating IRQ0: What's the Next Instruction]({{<iref
 "integrating-irq0#whats-the-next-instruction" >}}).
 
 Importantly, while there is only one time that the output of the

@@ -7,9 +7,9 @@ draft = false
 ## Introduction
 
 Whoooo boy. This one was a real challenge for me, an amatuer computer
-engineer. As I was working through the issues in the [IRQ Mistake]({{<
-ref "irq-mistake" >}}), I realized that the real issue was much deeper
-than I had expected.
+engineer. As I was working through the issues in the
+[IRQ Mistake]({{<iref "irqs-mistake" >}}), I realized that the real
+issue was much deeper than I had expected.
 
 I spent the better part of two weeks attempting to figure out why my
 circuit (not that important as it turns out) was behaving as if one of
@@ -200,7 +200,7 @@ artifact will appear on the line.
 It seems to be somewhat of a rule-of-thumb situation that determines
 how long is "long enough". I'm not able to find a definitive answer,
 but if I plug in the various parameters of the PCB for the
-[Daughter Board]({{< ref "daughter-board" >}}) into the KiCad
+[Daughter Board]({{<iref "daughter-board" >}}) into the KiCad
 Transmission Line Calculator, it tells me there is a "characteristic
 impedence" that is non-zero indicating this is an issue for us.
 
@@ -267,7 +267,7 @@ Plugging all of the values this trace length implies into the
 calculator it gives a transmission line resistance of about
 \140\Omega\, but the closest resistor value that is common is
 \150\Omega\, which again is Close Enough &trade;. The newest version
-of the [Daughter Board]({{< ref "daughter-board" >}}) has exactly
+of the [Daughter Board]({{<iref "daughter-board" >}}) has exactly
 those in it:
 
 ![Schematic with new transmission impedence resistors added](img/transmission-line-reflections/clock-resistors.png)
@@ -305,7 +305,7 @@ It never occurred to me that I would need to understand the physics of
 electrical signal propagation so deeply when I started this project. I
 found myself in this position as I tried to explain behavior that
 didn't make sense to me, namely in working on [Integrating IRQ0]({{<
-ref "integrating-irq0" >}}) and the [IRQ Mistake]({{< ref
+ref "integrating-irq0" >}}) and the [IRQ Mistake]({{<iref
 "irq-mistake" >}}).
 
 In those cases I started removing more and more assumptions about the

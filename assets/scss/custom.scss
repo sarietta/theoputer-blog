@@ -1,6 +1,18 @@
 .article-page {
   .main-article {
     .article-content {
+      a[href*="#missing"] {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      a[href*="#missing"]:after {
+        content: ' (Post In Progress)';
+        font-size: 70%;
+        margin-left: 0.4em;
+        margin-right: 0.4em;
+      }
+
       td, th {
         text-align: center !important;
       }
