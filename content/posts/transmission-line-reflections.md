@@ -1,5 +1,6 @@
 +++
 title = 'Transmission Line Reflections'
+description = 'What started as a seemingly small issue with the IRQ circuit turned into a very deep, very subtle expedition into an important property of circuits I never knew about.'
 date = 2024-11-09T13:49:41-08:00
 draft = false
 +++
@@ -222,14 +223,14 @@ phenomenon. Phew.
 
 ## Complex Problem, Easy Solution
 
-There are a few ways to handle transmission line ringing, but by the
-easiest is to add a resistor at the source of the signal. The resistor
-will add impendence to the system, and if it's chosen correctly can
-filter out the ringing produced in the line. This is where it's
-helpful to switch back to the physics view of the world, because in
-effect we want to create a "Critically Damped Oscillator". Such an
-oscillator will not exhibit ringing and will not take any longer to
-reach the maximum or minumum amplitude of the wave.
+There are a few ways to handle transmission line ringing, but the
+easiest seems to be to add a resistor at the source of the signal. The
+resistor will add impendence to the system, and if it's chosen
+correctly can filter out the ringing produced in the line. This is
+where it's helpful to switch back to the physics view of the world,
+because in effect we want to create a "Critically Damped
+Oscillator". Such an oscillator will not exhibit ringing and will not
+take any longer to reach the maximum or minumum amplitude of the wave.
 
 In the original diagrams, the critically damped oscillator is the one
 that produces the blue line:
@@ -242,18 +243,28 @@ also a wave, and thus is also is an infinite sum of harmonics, and
 thus it will exhibit this overshoot/ringing unless it is critically
 damped.
 
-Choosing the right value for the resistor is hard. The KiCad
-Transmission Line Calculator is reasonable enough, but for my purposes
-I just set up a little experiment with a potentiometer and measured
-the value that make my oscilloscope show a critically damped
-oscillator at the gate inputs of the clock signals.
+Choosing the right value for the resistor is hard because it requires
+knowing about all of the impedences, inductances, capacitances, and
+the mathematical model relating them all to ringing. Fortunately, the
+KiCad Transmission Line Calculator seems to work reasonably enough,
+though it has its fair share of parameters that are hard to
+understand. In the end, the best way to choose a resistor value is to
+create an isolated experiment and adjust the resistor value until the
+signal reaches the critically damped trace.
 
-In theory we would need to take this measurement for every such clock
-input and then have a resistor for each such trace length, but that
-would require routing many clock signals. Instead, we can attempt to
-make all of the clock signal trace lengths about the same length.
+In theory we would need to calculate this resistor value for every
+such clock trace and then have a resistor for each of them. That has
+two engineering issues:
 
-> Note: For traces like the D+/D- in USB signal lines it is much more important to get the trace lengths identical, but in this case close is good enough.
+1. It requires a separate trace for each clock signal
+1. It requires a separate resistor for each trace
+
+Instead, we can attempt to make all of the clock signal trace lengths
+about the same length and go with the Close Enough &trade; argument.
+
+> Note: For traces like the D+/D- in USB signal lines it is much more
+  important to get the trace lengths identical, but in this case close
+  is good enough.
 
 ![Daught Board with the clock signal traces highlighted](img/transmission-line-reflections/clock-trace.png)
 {class="center"}
@@ -265,16 +276,19 @@ they're Close Enough &trade;.
 
 Plugging all of the values this trace length implies into the
 calculator it gives a transmission line resistance of about
-\140\Omega\, but the closest resistor value that is common is
-\150\Omega\, which again is Close Enough &trade;. The newest version
+\(140\Omega\), but the closest resistor value that is common is
+\(150\Omega\), which again is Close Enough &trade;. The newest version
 of the [Daughter Board]({{<iref "daughter-board" >}}) has exactly
 those in it:
 
 ![Schematic with new transmission impedence resistors added](img/transmission-line-reflections/clock-resistors.png)
 {class="center padded-white small"}
 
-And finally, after all of this exposition and work, here are the
-results:
+## The Critically-Damped Oscillator
+
+After all of this exposition and work the solution was simple: add a
+couple \(150\Omega\) resistors to a couple traces. Let's see what the
+results of that simple, but profound, adjustment is.
 
 ![Original clock signals showing clear ringing](img/transmission-line-reflections/oscilloscope-ringing.png)
 {class="center"}
@@ -290,7 +304,7 @@ trigger some TTL gate inputs.
 ![New clock signals with nearly imperceptable underdamping](img/transmission-line-reflections/oscilloscope-overdamped.png)
 {class="center"}
 
-This is the new ~~CLK~~ signal. It looks little odd because this is
+This is the new ~~CLK~~ signal. It looks a little odd because this is
 actually a zoomed-in portion of the transition of the signal as it
 reaches that max (5V) level. Importantly, the scale for this image is
 50mV instead of 2V, to show what little ringing there is. At the scale
@@ -298,6 +312,21 @@ of the previous image this signal looked like a square wave. At this
 scale, there is a slight over-damping with very minimal ringing, which
 is expected because we know we'll never perfectly get a square wave or
 even hit the magical critical damping in all cases.
+
+One other minor point to note is that the rise and fall times of a
+critically-damped oscillator will necessarily be slight slower than an
+under-damped one. This is due to the phenomenon described earlier
+about the energy needing to change "direction". The cost for making a
+less-ringing signal is it slows down a bit. More precisely, it takes
+longer to reach its maximum value because the signal approaches it
+slowly to avoid the overshoot.
+
+For completeness, the scope shows a rise time of \(26ns\) which comes
+out to about \(5.5ns/V\) if we use the displayed voltage range of
+\(4.73V\). This is well within the range of acceptable values for the
+logic families we're using (see a laborious note about
+[those acceptable values](https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/151/7510.slownfloatingCMOS_5F00_scba004c.pdf)
+if you're so inclined.).
 
 ## Final Thoughts
 
@@ -319,10 +348,11 @@ engineer. I even
 Many of the folks on that thread pointed to noise in the power lines,
 which is definitely a problem, but was more of a red herring than
 anything. Through a lot of searching about how ringing could occur
-from a clock signal or where undershoot and overshoot come from I
-stumbled on the definition and considerations around "transmission
-lines". The first formal note I discovered on this topic was in
-searching for information on how manufacturers advise engineers on
+from a clock signal and searching about where undershoot and overshoot
+comes from I stumbled on the definition and considerations around
+"transmission lines". The first formal note I discovered on this topic
+was in searching for information on how manufacturers advise engineers
+on
 [proper implementation of oscillators](https://www.jauch.com/downloadfile/5fdb142fc53b4a351124ad046a864d5ec/source_impedance_termination_hcmos_xos_20201127.pdf).
 
 Once I hypothesized the ~~CLK~~ signal was behaving like a
