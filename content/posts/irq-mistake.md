@@ -24,28 +24,25 @@ SR Latches are pretty simple devices, at least on the surface.
 ![SR Latch Internals](img/irq-mistake/2x/sr-latch-internals@2x.png)
 {class="center padded-white"}
 
-There's definitely some complexity here already though, because we
-don't often have to consider a self-dependency in circuits. In fact,
-that usually is a sign of being too clever, and we should always
-Endeavor to Never be Clever™.
+In our specific case we'll see that there is some hidden complexity
+because our circuit is self-dependent. That is, the IRQ circuit's
+state is dependent on the circuit itself. Specifically, the IRQ
+circuit is capable of disabling itself. And this is clever, but clever
+is something we should avoid. We should always Endeavor to Never be
+Clever™.
 
-Take this part of the original IRQ circuit for an example:
+Let's consider this part of the original IRQ circuit:
 
 ![SR Latch Implementation](img/irq-mistake/2x/sr-latch@2x.png)
 {class="center padded white"}
 
 There *is* an issue with this circuit, but it's very hard (for me) to
-see. One of the issues is that this circuit breaks the rule of
-self-dependence. It's not a real rule in the sense that it cannot be
-broken, because this circuit needs to be self-dependent. The circtuit
-needs to turn itself off.
-
-The problem is even trickier though. SR Latches are great, but they do
-suffer from one critical issue: if both ~~^S^~~ and ~~^R^~~ are active
-at the same time, the state of the latch is considered unstable. Well,
-that's what any Internet search would have you believe at least. Let's
-evaluate the state of the SR latch from above when both inputs are LO
-(active in this case). Supposedly this is an unstable configuation:
+see. SR Latches are great, but they do suffer from one critical issue:
+if both ~~^S^~~ and ~~^R^~~ are active at the same time, the state of
+the latch is considered unstable. Well, that's what any Internet
+search would have you believe at least. Let's evaluate the state of
+the SR latch from above when both inputs are LO (active in this
+case). Supposedly this is an unstable configuation:
 
 ![SR Latch Unstable](img/irq-mistake/2x/sr-latch-unstable@2x.png)
 {class="center padded-white"}
@@ -54,7 +51,8 @@ But that doesn't appear unstable at all! Anytime one of the NAND
 inputs is LO, the output will be HI. The NAND gates themselves are
 *not* in an unstable state. They are very stable!
 
-The issue with this state is twofold:
+Stability isn't the only issue we might encounter. While it's arguable
+the current state is stable there are two other issues:
 
 1. The complimentary output (~~^Q^~~ in this case) is supposed to be
 opposite the output, and it is not; they are both HI.
@@ -62,14 +60,15 @@ opposite the output, and it is not; they are both HI.
 2. If both ~~^S^~~ and ~~^R^~~ change to HI *at the same time*, there
 will be ambiguity about the state of the SR latch.
 
-These are the reasons this configuration is called unstable. Being a
-bit pedantic, I would argue at this moment in time the configuration
-is stable, but *inconsistent* and the *simultaneous transition* to
-`S=R=1` is an unstable transition.
+These are the reasons the Internet calls this configuration
+unstable. Being a bit pedantic, it's more accurate to say the
+configuration is stable, but *inconsistent* and the *simultaneous
+transition* to `S=R=1` is an unstable *transition*.
 
-In general this means we have to be very careful when using SR latches
-to avoid the two cases above. We can certainly use `S=R=0`, but great
-care must be taken, and in general it's likely best avoided.
+In practice this means we have to be very careful when using SR
+latches to avoid the two cases above. We can certainly use `S=R=0`,
+but we should air on the side of avoiding it and if we are forced to
+use it great care must be taken to use it correctly.
 
 ## Timing Diagram for SR Latch
 
@@ -86,11 +85,11 @@ the interrupt request sequence we are in (see
 >}}) for details on that).
 
 Let's consider the timing diagram for the entire interrupt
-request. It's fairly complicated, but in putting this together, I
+request. It's fairly complicated, but in putting this together I
 actually discovered the issue this entire post is about. So while it's
-laborious (sometimes) to put these diagrams together, they are very
-useful for working through the challenging timing interactions of
-circuits, especially when there is self-dependence.
+laborious to work through these diagrams, they can be very useful for
+sorting out the challenging timing interactions of circuits,
+especially when there is self-dependence.
 
 ![Timing Diagram](img/irq-mistake/2x/timing-diagram-1@2x.png)
 {class="center padded-white"}
@@ -104,7 +103,7 @@ interactions between the clock stage signals and the SR latch for the
 {class="center padded-white"}
 
 Starting from the bottom we see that there is a distinct
-~~↑CLK_STAGE~~ block starting at Ⓐ, following by a ~~↓CLK_STAGE~~
+~~↓CLK_STAGE~~ block starting at Ⓐ, following by a ~~↑CLK_STAGE~~
 block starting at Ⓑ.
 
 > Note: Because of "hysteresis" in the gates/transistors and
@@ -128,9 +127,9 @@ applying, is *probably*. And *probably* means just fix it, because
 **the cost of fixing it will almost always be less than the cost to not
 fix it**.
 
-For argument sake, let's look at an exaggerated, unlikely but possible
-situation going on with the signal delays on the ~~^S^~~ input and the
-~~^R^~~ input:
+For argument sake, let's look at an exaggerated and unlikely, but
+possible, situation going on with the signal delays on the ~~^S^~~
+input and the ~~^R^~~ input:
 
 ![Exaggerated Overlap](img/irq-mistake/2x/timing-diagram-exaggerated@2x.png)
 {class="center padded-white"}
@@ -170,11 +169,11 @@ Let's zoom out mentally from our schematic for the interrupt request
 and think about what it means for the ~~DO_IRQ~~ signal to be
 active. That signal should really only ever be turned on when the
 interrupt request first comes in. After that, the next thing the
-~~DO_IRQ~~ signal should do is turn off, namely at the point when
-we're resetting our circuit.
+~~DO_IRQ~~ signal should do is turn off and it should turn off at the
+point when we're resetting our circuit.
 
 In our circuit we _almost_ have the condition we need. The interrupt
-request signal itself, ~~IRQ0~~ definitely creates a LO -> HI
+request signal ~~IRQ0~~ definitely creates a LO -> HI
 transition and then stays HI thereafter.
 
 ![IRQ0 Input Circuit](img/irq-mistake/2x/irq0-input-circuit@2x.png)
