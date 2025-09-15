@@ -8,11 +8,6 @@ math = true
 
 ## Introduction
 
-The [Theoputer ALU]({{<iref "alu.md" >}}) is fairly standard as far as
-Arithmetic Logic Units are concerned, at least in the simple 8bit
-comuter case, but our original discussion about it didn't handle
-perhaps the second-most important arithmetic operation: subtraction.
-
 The entirety of the original post about the [Theoputer ALU]({{<iref
 "alu.md" >}}) was dedicated to describing addition. But the curious
 reader may have wondered why subtraction is mentioned suspiciously
@@ -68,7 +63,7 @@ Where \(s\) would denote the "sign" of the number. That certainly
 would allow us to represent negative numbers, but what does it mean
 for being able to perform subtraction? It means nothing on the
 surface. At least not unless by some weird chance adding numbers that
-have this flag set/not set results in subtraction. We will say in a
+have this flag set/not set results in subtraction. We will see in a
 bit (pun intended) that this does not work. However, it turns out
 there is a *very* clever way to take this same idea and make it so
 that we can perform the same kind of addition that happens in a
@@ -88,13 +83,14 @@ Let's start from simple principles and build up. Ideally we want to be
 able to do the following:
 
 $$
-c = a + b
+c = b + a
 $$
 
 Where \(a\), \(b\), and \(c\) are all numbers that can be
 negative. Subtraction could then be easily implemented by first
-turning \(b\) into negative \(b\) and then running \(a\) and \(b\)
-through our adder. Recall our process for adding together numbers:
+turning \(a\) into negative \(a\) and then running negative \(a\) and
+\(b\) through our adder. Recall our process for adding together
+numbers:
 
 1. Add the least-significant digits
 1. Carry over any amount above the digit limit to the next-significant digit
@@ -211,14 +207,13 @@ over any excess to the next digit.
 
 Now comes the clever part. Let's imagine that the highest digit (the
 eighth one in the Theoputer case) is not \(2^7\), but instead is
-\(-2^7\). Remember, we sort of just agreed on the value of that
-base. We did so before in such a way that there were no missing
-numbers, so let's see if that's still the case. For simplicity, let's
-consider 4-bit numbers:
+\(-2^7\). Remember, we sort of just agreed on the value of that base
+anyway, so maybe we can get away with agreeing on a slightly different
+value. But it was very important before that our base value choices
+resulted in no missing numbers, so let's see if that's still the
+case. For simplicity, let's consider 4-bit numbers:
 
-| $-2^3$| $2^2$ | $2^1$ | $2^0$ | Decimal |
-|-------|-------|-------|-------|---------|
-| (-8)  | (4)   | (2)   | (1)   |         |
+| $-2^3 = -8$| $2^2 = 4$ | $2^1 = 2$ | $2^0 = 1$ | Decimal |
 |-------|-------|-------|-------|---------|
 | 1     | 0     | 0     | 0     | -8      |
 | 1     | 0     | 0     | 1     | -7      |
@@ -289,10 +284,10 @@ all of the positive numbers.
    (carry=1)
 </pre>
 
-Well look at that! The answer we get is $0$ with a carry of $1$. Now
-you may, rightly, object! Sure, we've produce the value $0$ here, but
-what about that carry?! Well that's a good question, so let's unpack
-it.
+Well look at that! The answer we get is $0$!... with a carry of
+$1$. Now you may, rightly, object! Sure, we've produce the value $0$
+here, but what about that carry?! Well that's a good question, so
+let's unpack it.
 
 ## What To Do With Carry?
 
@@ -339,9 +334,10 @@ representable. That means these are the cases where our adder should
 indicate overflow, or in layman's terms: "this value is not
 representable".
 
-Do you notice anything specific about those two red rows? They are the
-result of computing \((c_3 \; \textrm{XOR} \; c_2)\)! Our good old
-friend XOR! Now *that's* clever.
+Do you notice anything specific about those two red rows in the
+context of the other rows? The red rows can be determined uniquely by
+computing \((c_3 \; \textrm{XOR} \; c_2)\)! Our good old friend XOR!
+Now *that's* clever.
 
 So *if* we're computing additions (and subtractions by way of negation
 first) using our fancy \(-2^3\) MSB base, then we can detect overflow
@@ -364,41 +360,45 @@ signed operations or overflowed during unsigned operations.
 ## A Fine Compliment
 
 Ok that's the second time I've intentionally misspelled that
-word. Enough is enough. But seriously, this whole post is really a
-kind of "proof" about how two's complement numbers work and why
-they're useful. The only thing we didn't cover is how to take a
-postive number and turn it into it's negative sister. So let's do
-that! No one can stop us now. Consider a positive number:
+word. Enough is enough. We aren't quite done yet. we've covered how to
+perform subtraction via two's complement numbers, but we haven't
+derived a way to take a postive number and turn it into it's negative
+sister. So let's do that! No one can stop us now. Consider a positive
+number:
 
 $$
 a = (-2^n) * 0 + 2^{n-1} * a_{n-1} + ...
 $$
 
+> Note: The top bit will always be $0$ in a positive number in the
+  two's complement scheme.
+
 We want the negative version of this number. Let's just use a 4bit
 number so we can avoid using \(n\) everywhere; it will just make
-things harder to see:
+things easier to see:
 
 $$
 \begin{align*}
-a &= (-2^3) * 0 + (2^2) * a_2 + (2^1) * a_1 + (2^0) * a_0\\
-\overline{a} &= - (2^2) * a_2 - (2^1) * a_1 - (2^0) * a_0
+a &= (-2^3) * 0 +& (2^2) * a_2 + (2^1) * a_1 + (2^0) * a_0\\
+\overline{a} &= &- (2^2) * a_2 - (2^1) * a_1 - (2^0) * a_0
 \end{align*}
 $$
 
 Now a clever part. Recall that all of the \(a_i\) are either $0$ or
-$1$, and let's subtract them from one. That seems like it's not really
+$1$. Let's subtract them from one. That seems like it's not really
 possible. After all, we are trying to figure out how to make a
-negative here. But we can perform this kind of \(1 - a_i\) subtraction
-by negating \(a_i\) using a NOT gate. That gives us this:
+negative here to perform subtraction. But we can perform this kind of
+\(1 - a_i\) subtraction by negating \(a_i\) using a NOT gate. That
+gives us this:
 
 $$
-(-2^3) * (1) + (2^2) * (1 - a_2) + (2^1) * (1 - a_1) + (2^0) * (1 - a_0)
+a^* = (-2^3) * (1) + (2^2) * (1 - a_2) + (2^1) * (1 - a_1) + (2^0) * (1 - a_0)
 $$
 
 Why do this? The intuition is that we need to get negatives into the
 equation *somehow*. The only way to do that naturally with logic gates
-is to use this kind of negation. It introduces this \(1 - a_i\)
-notion, which implicitly introduces a subtraction operation through a
+is to use this kind of negation. It introduces these \(1 - a_i\)
+quantities, which implicitly introduces a subtraction operation via a
 logical operation. Let's continue to see what we get:
 
 $$
@@ -406,6 +406,7 @@ $$
 a^* &= (-2^3) * (1) + (2^2) * (1 - a_2) + (2^1) * (1 - a_1) + (2^0) * (1 - a_0)\\
 &= -8 + 4 + 2 + 1 - (2^2) * a_2 - (2^1) * a_1 - (2^0) * a_0\\
 &= -1 - (2^2) * a_2 - (2^1) * a_1 - (2^0) * a_0\\
+&= -1 + \overline{a}
 \end{align*}
 $$
 
@@ -432,7 +433,7 @@ And that's awesome!
 
 We know how to [add binary numbers]({{<iref "alu.md" >}}) via Full
 Adders. We also know that if we do so with two's complement numbers we
-get handle negative numbers. Finally, we know how to negate a
+can handle negative numbers. Finally, we know how to negate a
 number. Putting this all together, if we denote the ALU addition
 operation as \(f(x, y)\), then we can compute subtraction via:
 
