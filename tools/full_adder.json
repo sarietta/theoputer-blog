@@ -1,0 +1,18 @@
+{
+  "gates": [
+    {"id": "A", "type": "INPUT", "label": "A", "x": 50, "y": 50},
+    {"id": "B", "type": "INPUT", "label": "B", "x": 50, "y": 100},
+    {"id": "Cin", "type": "INPUT", "label": "Cin", "x": 50, "y": 150},
+
+    {"id": "X1", "type": "XOR", "in1": "A.out", "in2": "B.out", "x": 200, "y": 75},
+    {"id": "A1", "type": "AND", "in1": "A.out", "in2": "B.out", "x": 200, "y": 175},
+
+    {"id": "X2", "type": "XOR", "in1": "X1.out", "in2": "Cin.out", "x": 350, "y": 125},
+    {"id": "A2", "type": "AND", "in1": "X1.out", "in2": "Cin.out", "x": 350, "y": 225},
+
+    {"id": "O1", "type": "OR", "in1": "A1.out", "in2": "A2.out", "x": 500, "y": 200},
+
+    {"id": "SUM", "type": "OUTPUT", "in1": "X2.out", "label": "Sum", "x": 650, "y": 125},
+    {"id": "COUT", "type": "OUTPUT", "in1": "O1.out", "label": "Cout", "x": 650, "y": 200}
+  ]
+}

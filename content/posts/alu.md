@@ -1,5 +1,6 @@
 +++
-title = 'Alu'
+title = 'The Arithmetic Logic Unit (ALU)'
+description = "The Arithmetic Logic Unit (ALU) is the Theoputer's core computational component, responsible for various operations including binary addition. But how do we go from logic circuits to arithmetic?"
 date = 2024-12-30T11:32:03-08:00
 draft = false
 math = true
@@ -26,7 +27,7 @@ is something called a half adder. This is a weird term. How can you
 half add something? It turns out this term is only useful if you know
 what a full adder is, so we'll start there.
 
-### Back to Gradeschool
+### Back to Grade School
 
 Let's imagine we have just two numbers, represented in binary, that we
 want to add together. Similar to the rules of addition for decimals,
@@ -50,16 +51,16 @@ Here's a simple example in decimal for adding `180` and `140`:
   1[8]0
 + 1[4]0
 -----------
-    2 0 
+    2 0
     (carry=1)
-    
+
   [1] (carry)
   [1]8 0
 + [1]4 0
 -----------
-   3 2 0 
-   (carry=0)    
-</pre>    
+   3 2 0
+   (carry=0)
+</pre>
 
 That second step shows the carry in play. You did this automatically
 in your head probably by now, but when you were first learning how to
@@ -125,21 +126,21 @@ Let's try all of this with our numbers `1011 + 0011`:
  -----------
        0
        (carry=1)
- 
+
     [1] (carry)
  1 0[1]1
  0 0[1]1
  -----------
      1 0
      (carry=1)
- 
+
   [1] (carry)
  1[0]1 1
  0[0]1 1
  -----------
    1 1 0
    (carry=0)
- 
+
 [0] (carry)
 [1]0 1 1
 [0]0 1 1
@@ -281,10 +282,70 @@ operations can happen in parallel.
 This is hard to notice in the equation form, but much easier if we
 just draw out the logical schematic for this Full Adder:
 
+<iframe src="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjAbCAMB00IQVnHATAtB2LBmaAHGhAJwlYhLSWXVICmAtGGAFBhUgAsC4Ja3ElDD8YIAXXZIu3XiwFIwA+WImVWAd1nUhIXEgG7om7eCxR9y8zBOWzFgyCO3HutGhnOt7mUoJ7cYTR-Yy1cQPBggKgMENsI2NNE0OjI-x5qPxsOGQgkIP9zfyzqNSQpajyYwhAsR2TxMXKtRWUlSlEVFKRO9qrwdpT+kQVO0W6x0baJEx9ufwgPeZstRZkuBaWwLhkhrZ2QNfElvZk5-rmh-PADo+3dky5dEcp2l+630VbxLBmW9uwAjqAkB2UcBF4cwIbhOjUkWghpR4tXqyJSwPEyIxoPR9RqiPENXREGKUX4pLiCJhniil1YGAo5LSTmsWRkAHl6dBGbSluQYksZABhAD2AFcAC5cihzDb2ZbCgCWADtpcdPMJrLoZABBNVzLJgVlRGQAIVYABl1U4BTIIWJqAAzACGABsAM70GjGK0G3m+QZiF0er0oH3WuVzXBqJ1uz3e1gAWScUSyTK64lg5WTTLmuaJmfKQA" frameborder="0" style="width:100%;height:300px">
+</iframe>
 
+> Note: You can toggle the inputs on the right side by clicking the
+  "L" labels, which stand for "Low Voltage", and see how the two
+  outputs change!
+
+Notice in the schematic above we're computing \((a_i \;\textrm{XOR} \; b_i)\) once and reusing it in both equations. Also notice the repeated XOR/AND combination in the first "stage" between \(a_i\) and \(b_i\) and then the output of \((a_i \; \textrm{XOR} \; b_i)\) and \(c_{i-1}\).
+
+> Apologies that the schematic uses "Cin" instead of
+  \(c_{i-1}\). That's a limitation of the circuit simulator, but other
+  than formatting flexibility, this is my go to simulator!.
+
+That repeated XOR/AND combination is what people call a Half
+Adder. Again, I don't think that makes a lot of sense if you don't
+know what the Full Adder is, but now that you do, it does make sense
+:).
+
+## Arithmetic Logic Unit
+
+An Arithmetic Logic Unit can be many things. The simplest, and the
+first one in the Theoputer, is just a few Full Adders linked
+together. In the case of the Theoputer, since we are dealing in 8bit
+numbers, we have 8 such adders. Here are the first couple bits for
+easier reading:
+
+<iframe src="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjAbCAMB00IQVnHATAtB2LBmaAHGhAJwlYhLSWXVICmAtGGAFBhUgAsC4Ja3ElDD8YIASiTskXbrxYSwAhWIF1WAdznUhIXEgG7om7eCxR9y8zBOWzFgyCO3HutGlnOt72UoJ7cYTR-Yy1cQPBggKgMENsI2NNE0OjI-x5qPxsOWQgkIP9zfyzqNUppajyYwhAsR2TxMSktJCVwNqRRFRTO5Taq9rUTAZEJLtEe8bG+oe8Pbn8Iea44rSXZFZB18C5ZFO2wXa35nxs1k-mB0-38ndz5w72TLl1Ryja3no-RVoFsWfefywAjqQKGHAEBF4pwIbnmpRozRAUNKPFq9TRKVB4jR2P+Z3RfxqKPENSxEGKUX4lNWyLhnii11YGAo1LSTmsWVkAHk2CzxPNXtZdLIAIJ86AUU5ZMCcqKyABCbAAMgLPDF5lCxGAQAAzACGABsAM70GjGVXSxkPNqZPVG03m1iW5b+U64MrUA0ms0oYwAWScUSybO64lgUkDbNwBAZ-kCIXDUhdshjsndFLEXodvpsKb09Xm4Sgdu9jr9zMlar0sfsNY2IAVaErUqLjllDgEYub-OjtfIFlrPObWlhUBWOnlWvJ8f7UTTBOxXAgshJy6eWiXumxBlpa+3jheJekkN4E7p4+njUkJl+lCiO6iXy7mzvu4JR+4r7au1pAwyxwbLw+yupUtzniBQGVKBBLbPg9xQQSvRfv4yEJrB4GvqIv5IaI6EDOhz56JmaGZsYHBgeOK6Etw1EIjeORbLcC5FPWqhNPEg6IQuKTFrRiHrgSfELnxgkpO6tbCbWvGOHY7qODJXYegWAh2CkAFcMpdiaQCAF2PpCnSNxJFtIR17lBRpg4Z+OEIuo5yptAcZ6E5BJsqc0auSkbLnmy+TUJBlAQJOqHBdknAAVgrmflFeyNOojEAdsd7bHZ5RaElNR2MFtJJQQ8aOBStLZflKlbGSLgCDl1bVeJlxonxK4BZxWwNREwLNWE7UYKYHVCRETWmIN5EyExUCDaxw3mVIlkDH12J9WlSIpfMyGpbeojbAM61rLcsWUKI+2TCCrlrfCwyrWFW23IF23zHgx4ObUA17RENzjbc12PYIUD7XeR23m0f1A9JgMgrWC2gxCyK8A9F7PSW8XpTD1ALY42JYujWPgxuNF9SSi0mJNaJssNJhjgjQaFG9LZU61OjWINPK4LTpzVR25XpCAoos-ybNohzTONiz+bVacyEBfaPpOqLaJs-CYhlrmAZ04NpMK2gEasEAA" frameborder="0" style="width:100%;height:600px">
+</iframe>
+
+The real schematic looks pretty much identicial to that one, except
+for some headers to allow the ALU to be modularly inserted into other
+things. Initially the thing it was inserted into was a breadboard for
+testing. Once it proved to be working correctly, its destination was
+the [Daughter Board]({{<iref "daughter-board" >}}).
+
+![ALU interface to the daughter board](img/alu/alu-interface.png)
+
+> Note: Many of the control signals like ~~^DIV^~~ have an 'X' on
+  them, indicating they are not connected and thus not used.
+
+## Other (Non-Addition) Operations
+
+The ALU today, even as "fancy" by comparison as it is, is pretty much
+the same as the original ALU. It has a few more bells and whistles
+that allow instructions to pull out just the XOR result or just the
+AND result, with a couple other features. But other than that, it's
+mostly the same.
+
+There are two circuits that didn't make it into the Theoputer, namely
+a circuit for [Multiplication]({{<iref "alu-multiplication" >}}) and
+[Division]({{<iref "alu-division" >}}). The reason they're not in the
+Theoputer is because they're too complicated (circuit-wise) and have
+too many chips in them to be worth it when we can just rely on the
+speed of the computer to repeatedly add or subtract things to
+"simulate" multiplication and division.
+
+THe one part of the ALU that we didn't talk about that *is* in the
+Theoputer ALU is subtraction. The solution for subtraction is
+beautifully simple circuit-wise, but rather clever and non-intuitive
+(at first). If you want to know about that part of the ALU, the post
+on [ALU Subtraction]({{<iref "alu-subtraction" >}}) is what you want.
 
 <!-- Local Variables: -->
 <!-- gptel-model: gemini-2.5-flash -->
 <!-- gptel--backend-name: "Gemini" -->
-<!-- gptel--bounds: ((response (3427 3428) (4189 4190) (5721 5722) (6188 6189) (6609 6610))) -->
+<!-- gptel--bounds: ((response (61 205) (3653 3654) (4415 4416) (5944 5945) (6411 6412) (6832 6833))) -->
 <!-- End: -->

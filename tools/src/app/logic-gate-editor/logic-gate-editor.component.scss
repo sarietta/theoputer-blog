@@ -1,0 +1,73 @@
+.logic-gate-editor-container {
+  display: flex;
+  height: calc(100vh - 60px); /* Adjust based on your header/footer */
+  border: 1px solid #ccc;
+}
+
+.palette {
+  width: 150px;
+  border-right: 1px solid #eee;
+  padding: 10px;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}
+
+.palette h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.gate-icon {
+  padding: 8px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  text-align: center;
+  cursor: grab;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.gate-icon:hover {
+  background-color: #eef;
+  border-color: #cdd;
+}
+
+.gate-icon.selected {
+  background-color: #d0e0ff;
+  border-color: #6699ff;
+  box-shadow: 0 0 5px rgba(102, 153, 255, 0.5);
+}
+
+.canvas-area {
+  flex-grow: 1;
+  background-color: #f0f0f0;
+  position: relative;
+  overflow: hidden; /* Important for SVG */
+}
+
+.drawing-canvas {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.wire-label-editor {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+  input {
+    border: none;
+    outline: none;
+    width: 80px;
+    font-size: 10px;
+  }
+}
