@@ -22,7 +22,7 @@ explanations, mostly to benefit my forgetful mind. The upside is maybe
 I've succeeded in creating some semblance of educational material.
 
 So read this if you're interested in Computer Engineering, scientific
-process, ramblings of an at-time obsessed builder, or maybe if you
+process, ramblings of an at-times obsessed builder, or maybe if you
 like my prose?
 
 Or just look at the pictures. I spent a lot of time making them :).
@@ -51,9 +51,9 @@ of mistakes. And let me assure you that I made and continue to make
 **a lot** of mistakes.
 
 So here we are. Round four. Started in roughly late January of
-2024. Though to be fair we *are* is in fact December of 2024. I am
-only recently started on the slightly tangential path of writing about
-what I've been building nearly 12 months after starting!
+2024. Though to be fair when we *are* is in fact December of 2024. I
+am only recently started on the slightly tangential path of writing
+about what I've been building nearly 12 months after starting!
 
 Nevertheless, welcome all the same. I expect very little from writing
 this up as I expect very little from building my little
@@ -129,7 +129,7 @@ pull me into it.
 
 * My Son: His name is Theo... the puter. :). He helps me solder, he
   dumps the ICs all over my office floor forcing me to take a step
-  away and clean up, and he love pushing buttons and twisting dials. I
+  away and clean up, and he loves pushing buttons and twisting dials. I
   think part of the reason this project stuck this time was because of
   him. Part of me wants to show him what his dad can do, and to
   inspire him to look at barriers as walls to be scaled rather than
