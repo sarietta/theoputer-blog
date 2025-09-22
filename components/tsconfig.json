@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "rootDir": "./",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "outDir": "../static/js/components/"
+  },
+  "include": [
+    "**/*"
+  ]
+}
