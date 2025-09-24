@@ -1,12 +1,6 @@
-#### Truth Table: A OR B as (NOT A) NAND (NOT B)
-
-| Input A | Input B | NOT A | NOT B | (NOT A) NAND (NOT B) | A OR B |
-|---------|---------|-------|-------|----------------------|--------|
-| 0       | 0       | 1     | 1     | 0                    | 0      |
-| 0       | 1       | 1     | 0     | 1                    | 1      |
-| 1       | 0       | 0     | 1     | 1                    | 1      |
-| 1       1     | 0     | 0     | 1                    | 1      |+++
++++
 title = 'Clock Extras'
+description = "The CPU clock isn't just an oscillator. It also includes some specific parts that allow it to work with the rest of the computer, and be useful to the intrepid builder."
 date = 2025-09-21T14:17:11-07:00
 draft = false
 math = true
@@ -344,3 +338,18 @@ Unfortunately it wasn't until the third iteration of the Theoputer
 clock circuit that this became a large enough issue that it caused a
 marathon of oscilloscope work, but at least it happened early enough
 to learn the lesson for future boards.
+
+## Closing Thoughts
+
+The clock is such a critical part in the operation of the
+Theoputer. It's also one of the few analog parts of the system, which
+is not my strength. Even with all of the considerations outline in
+this post and the [previous one]({{<iref "clock.md" >}}) there was
+still a major issue with the clock, namely that it ended up behvaing
+like a [Transmission Line]({{iref "transmission-line-reflections.md"
+>}}).
+
+The [most-recent clock circuit]({{<iref "clock-four-layer.md" >}}),
+implemented on a four-layer board, is very similar to the one outlined
+here, but it includes some nice PCB design features that attempt to
+cut down on noise introduced by something called ground bounce.

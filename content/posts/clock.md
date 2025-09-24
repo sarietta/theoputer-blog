@@ -1,5 +1,6 @@
 +++
 title = 'Clock Basics'
+description = "Getting from an analog oscillating voltage to a nice sharp digital square wave is tricky to get right."
 date = 2025-09-15T21:52:12-07:00
 draft = false
 math = true
