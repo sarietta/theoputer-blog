@@ -47,6 +47,12 @@
         }
       }
 
+      .medium {
+        img {
+          max-width: 75%;
+        }
+      }
+
       mark, del {
         text-decoration: none;
         font-family: monospace;

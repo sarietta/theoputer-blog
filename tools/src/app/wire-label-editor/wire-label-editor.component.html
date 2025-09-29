@@ -1,0 +1,9 @@
+<div class="wire-label-editor"
+     [style.left.px]="position.x"
+     [style.top.px]="position.y">
+  <input [(ngModel)]="label"
+         (keyup.enter)="save.emit(label)"
+         (keyup.escape)="cancel.emit()"
+         (blur)="save.emit(label)"
+         #labelInput>
+</div>
