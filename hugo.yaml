@@ -4,6 +4,19 @@ theme: hugo-theme-stack
 title: Theoputer
 copyright: Sean Arietta
 
+menus:
+  main:
+  - name: Home
+    url: /
+    weight: 10
+    params:
+      icon: home
+  - name: Simulator
+    url: https://theoputer.sarietta.com/simulator
+    weight: 20
+    params:
+      icon: simulator
+
 params:
     mainSections:
         - posts

@@ -282,7 +282,7 @@ happens as \(R\) increases you can see that the derivative will be
 small. In other words, a higher resistance will cause the capacitor to
 charge slower, decreasing the rise/fall time.
 
-### High Inductance Is Just Bad
+### Large Current Loops
 
 There's another issue with high inductance that is more
 subtle. Normally we don't differentiate between impedence and
@@ -305,3 +305,22 @@ That will cause larger loops of current to form as the signal return
 current goes through the longer loop. Large loops can start to look
 like antennas or electromagnets or all sorts of oscillating
 badness.
+
+## Final Thoughts
+
+Noise in power lines (not really just ground) causes a lot of
+non-trivial problems as I've hopefully outlined well above. On more
+than one occasion one of the problems above caused *me* issues that
+cost me weeks of debugging.
+
+It's easy to disregard noise as, well as just noise. "It's not
+important" because it's just noise. But that's not great engineering
+practice. It's almost always in the edge cases, where the noise likes
+to live, that affect the operation of systems. In practicing good
+engineering habits I could have been more attentive to these sources
+of noise, but I wasn't. I also didn't really know about them before
+this project though, so I'll give myself a little slack.
+
+If you're curious about the practical implications of ground noise,
+read up on moving the clock to a [4-layer PCB]({{<iref
+"clock-four-layer.md" >}}).
