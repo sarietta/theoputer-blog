@@ -491,7 +491,8 @@ board:
 ![IRQ Scope Capture](img/irq-scope-capture.png)
 {class="center"}
 
-Next time we'll explore the updates to the Instruction and Control
+Next time we'll explore the updates to the
+[Instruction and Control]({{< iref "instruction-and-control.md" >}})
 board to connect up the IRQ, and then we can dig into some software
 for actually handling IRQs.
 
