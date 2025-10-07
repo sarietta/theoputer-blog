@@ -5,24 +5,75 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class SvgViewer extends LitElement {
   static styles = css`
 :host, div, object {
-      display: block;
-      width: 100%;
-      height: 100%;
+    position: relative;
+    // aspect-ratio: 3;
+    background-color: #f5f4ee;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .focus-overlay {
+    z-index: 10;
+    user-select: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: initial;
+    background: transparent;
+    contain: paint;
+  }
+
+  .focus-overlay.has-focus {
+    z-index: -10;
+    pointer-events: none;
+  }
+
+  .focus-overlay .bg {
+    background: var(--focus-overlay-bg);
+    opacity: 0;
+    transition: opacity var(--transition-time-short);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .focus-overlay:hover .bg {
+    opacity: var(--focus-overlay-opacity);
+  }
+
+  .focus-overlay.has-focus .bg {
+    opacity: 0;
+  }
+
+  .focus-overlay .fg {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--focus-overlay-fg);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+justify-content: center;
+background-color: #000;
 }
 
-.instructions {
-position: relative;
-    bottom: 31px;
-    height: 32px;
-background: #33333399;
-border-radius: 0 10px 0 0;
-max-width: 300px;
-}
+  .focus-overlay:hover .fg {
+    opacity: 0.7;
+  }
 
-.instructions span {
-padding-left: 15px;
-font-size: 90%;
-}
+  .focus-overlay.has-focus .fg {
+    opacity: 0;
+  }
   `;
 
   @property() src?: string;
@@ -44,6 +95,20 @@ font-size: 90%;
 
   private _onSvgLoad(event: Event) {
     this._updateViewBox(event.target as HTMLObjectElement);
+
+    const overlay = this.renderRoot.querySelector(".focus-overlay");
+    document.addEventListener("click", (clickEvent) => {
+      if (clickEvent.composedPath().includes(this)) {
+        overlay?.classList.add("has-focus");
+        this.setupSVGEventListeners();
+      } else {
+        overlay?.classList.remove("has-focus");
+      }
+    });
+
+    // document.addEventListener("click", () => {
+    //   overlay?.classList.remove("has-focus");
+    // });
   }
 
   private _updateViewBox(objectElement: HTMLObjectElement | null | undefined) {
@@ -59,16 +124,18 @@ font-size: 90%;
 
         this.viewBox = this.buildViewBoxString();
         this.svgElement.setAttribute('viewBox', this.viewBox);
-
-        this.svgElement.addEventListener('mousemove', this.onMouseMove.bind(this));
-        // Attach wheel listener to SVG for zooming
-        this.svgElement.addEventListener('wheel', this.onMouseWheel.bind(this), { passive: false });
-        // Attach mouse down, move, and up listeners for panning
-        this.svgElement.addEventListener('mousedown', this.onMouseDown.bind(this));
-        this.svgElement.addEventListener('mouseup', this.onMouseUp.bind(this));
-        this.svgElement.addEventListener('mouseleave', this.onMouseUp.bind(this)); // Stop panning if mouse leaves SVG
       }
     }
+  }
+
+  private setupSVGEventListeners() {
+    this.svgElement?.addEventListener('mousemove', this.onMouseMove.bind(this));
+    // Attach wheel listener to SVG for zooming
+    this.svgElement?.addEventListener('wheel', this.onMouseWheel.bind(this), { passive: false });
+    // Attach mouse down, move, and up listeners for panning
+    this.svgElement?.addEventListener('mousedown', this.onMouseDown.bind(this));
+    this.svgElement?.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.svgElement?.addEventListener('mouseleave', this.onMouseUp.bind(this)); // Stop panning if mouse leaves SVG
   }
 
   updated(changedProperties: Map<string | symbol, unknown>) {
@@ -102,10 +169,11 @@ font-size: 90%;
         data="${this.src}"
         type="image/svg+xml"
         @load=${this._onSvgLoad}
-></object>
-<div class="instructions">
-<span>You can pan/zoom this document.</span>
+      ></object>
 </div>
+<div class="focus-overlay">
+  <div class="bg"></div>
+  <div class="fg">Click or tap to interact</div>
 </div>
     `;
   }
