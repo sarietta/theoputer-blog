@@ -4750,9 +4750,6 @@ function parse_expr(expr, ...defs) {
       def = defs_map.get(element[0]);
     }
     if (!def) {
-      log.warn(
-        `No def found for element ${element} in expression ${expr}`
-      );
       continue;
     }
     const value = def.fn(out, def.name, element);
@@ -5045,6 +5042,55 @@ var Stroke = class {
 };
 
 // src/kicad/board.ts
+var TextRenderCache = class {
+  static {
+    __name(this, "TextRenderCache");
+  }
+  constructor(expr) {
+    Object.assign(
+      this,
+      parse_expr(
+        expr,
+        P.start("render_cache"),
+        P.positional("text", T.string),
+        P.positional("angle", T.number),
+        P.collection("polygons", "polygon", T.item(Poly))
+      )
+    );
+    for (const poly of this.polygons) {
+      poly.fill = "solid";
+    }
+  }
+};
+var Text2 = class {
+  constructor() {
+    this.unlocked = false;
+    this.hide = false;
+    this.effects = new Effects();
+  }
+  static {
+    __name(this, "Text");
+  }
+  static {
+    this.common_expr_defs = [
+      P.item("at", At),
+      P.atom("hide"),
+      P.atom("unlocked"),
+      P.object(
+        "layer",
+        {},
+        P.positional("name", T.string),
+        P.atom("knockout")
+      ),
+      P.pair("tstamp", T.string),
+      P.item("effects", Effects),
+      P.item("render_cache", TextRenderCache)
+    ];
+  }
+  get shown_text() {
+    return expand_text_vars(this.text, this.parent);
+  }
+};
 var KicadPCB = class {
   constructor(filename, expr) {
     this.filename = filename;
@@ -5135,20 +5181,26 @@ var KicadPCB = class {
     return null;
   }
 };
-var Property = class {
-  static {
-    __name(this, "Property");
-  }
-  constructor(expr) {
+var Property = class extends Text2 {
+  constructor(expr, parent) {
+    super();
+    this.parent = parent;
+    this.type = "value";
+    this.locked = false;
     Object.assign(
       this,
       parse_expr(
         expr,
         P.start("property"),
         P.positional("name", T.string),
-        P.positional("value", T.string)
+        P.positional("value", T.string),
+        ...Text2.common_expr_defs
       )
     );
+    this.text = this.value;
+  }
+  static {
+    __name(this, "Property");
   }
 };
 var LineSegment = class {
@@ -5593,7 +5645,7 @@ var Footprint = class {
       allow_solder_mask_bridges: false,
       allow_missing_courtyard: false
     };
-    this.properties = {};
+    this.properties = /* @__PURE__ */ new Map();
     this.drawings = [];
     this.pads = [];
     this.#pads_by_number = /* @__PURE__ */ new Map();
@@ -5637,7 +5689,13 @@ var Footprint = class {
           P.atom("allow_solder_mask_bridges"),
           P.atom("allow_missing_courtyard")
         ),
-        P.dict("properties", "property", T.string),
+        //P.dict("properties", "property", T.string),
+        P.mapped_collection(
+          "properties",
+          "property",
+          (p) => p.name,
+          T.item(Property, this)
+        ),
         P.collection("drawings", "fp_line", T.item(FpLine, this)),
         P.collection("drawings", "fp_circle", T.item(FpCircle, this)),
         P.collection("drawings", "fp_arc", T.item(FpArc, this)),
@@ -5676,13 +5734,16 @@ var Footprint = class {
     yield* this.drawings ?? [];
     yield* this.zones ?? [];
     yield* this.pads.values() ?? [];
+    if (this.properties.has("Value")) {
+      yield* [this.properties.get("Value")];
+    }
   }
   resolve_text_var(name) {
     switch (name) {
       case "REFERENCE":
-        return this.reference;
+        return this.properties.get("Reference")?.value ?? this.reference;
       case "VALUE":
-        return this.value;
+        return this.properties.get("Value")?.value ?? this.value;
       case "LAYER":
         return this.layer;
       case "FOOTPRINT_LIBRARY":
@@ -5702,8 +5763,8 @@ var Footprint = class {
           return this.pad_by_number(pad_name)?.pinfunction;
       }
     }
-    if (this.properties[name] !== void 0) {
-      return this.properties[name];
+    if (this.properties.has(name)) {
+      return this.properties.get(name).value;
     }
     return this.parent.resolve_text_var(name);
   }
@@ -6034,55 +6095,6 @@ var FpRect = class extends Rect {
   }
   static {
     this.expr_start = "fp_rect";
-  }
-};
-var TextRenderCache = class {
-  static {
-    __name(this, "TextRenderCache");
-  }
-  constructor(expr) {
-    Object.assign(
-      this,
-      parse_expr(
-        expr,
-        P.start("render_cache"),
-        P.positional("text", T.string),
-        P.positional("angle", T.number),
-        P.collection("polygons", "polygon", T.item(Poly))
-      )
-    );
-    for (const poly of this.polygons) {
-      poly.fill = "solid";
-    }
-  }
-};
-var Text2 = class {
-  constructor() {
-    this.unlocked = false;
-    this.hide = false;
-    this.effects = new Effects();
-  }
-  static {
-    __name(this, "Text");
-  }
-  static {
-    this.common_expr_defs = [
-      P.item("at", At),
-      P.atom("hide"),
-      P.atom("unlocked"),
-      P.object(
-        "layer",
-        {},
-        P.positional("name", T.string),
-        P.atom("knockout")
-      ),
-      P.pair("tstamp", T.string),
-      P.item("effects", Effects),
-      P.item("render_cache", TextRenderCache)
-    ];
-  }
-  get shown_text() {
-    return expand_text_vars(this.text, this.parent);
   }
 };
 var FpText = class extends Text2 {
@@ -33393,7 +33405,7 @@ var PanAndZoom = class {
       }
       this.lastMouseX = e.clientX;
       this.lastMouseY = e.clientY;
-      console.log(`camera`, this.camera);
+      console.log(`initialZoom="${this.camera.zoom}" initialX="${this.camera.center.x}" initialY="${this.camera.center.y}"`);
     });
     this.target.addEventListener("mousemove", (e) => {
       if (dragging && dragStartPosition !== null) {
@@ -35069,6 +35081,7 @@ var BoardPainter = class extends DocumentPainter {
       new GrTextPainter(this, gfx),
       new FpTextPainter(this, gfx),
       new DimensionPainter(this, gfx)
+      //new PropertyPainter(this, gfx),
     ];
   }
   static {
@@ -38645,13 +38658,6 @@ var KiCanvasEmbedElement = class extends KCUIElement {
 </kc-board-app>`;
       this.#board_app.viewerLoaded.then((_) => {
         later(async () => {
-          if (this.initialZoom !== null && this.initialX !== null && this.initialY !== null) {
-            this.#board_app.viewer.setOptions({
-              initialZoom: this.initialZoom,
-              initialX: this.initialX,
-              initialY: this.initialY
-            });
-          }
           const order = [
             ...CopperLayerNames,
             "F.Adhes" /* f_adhes */,
@@ -38683,14 +38689,34 @@ var KiCanvasEmbedElement = class extends KCUIElement {
             "User.9" /* user_9 */
           ];
           const layers = this.#board_app.viewer.layers;
-          for (const layer of layers.in_order()) {
-            if (order.indexOf(layer.name) !== -1) {
-              layer.visible = layer.name.includes(".Cu");
+          if (this.layers === null) {
+            for (const layer of layers.in_order()) {
+              if (order.indexOf(layer.name) !== -1) {
+                layer.visible = layer.name.includes(".Cu");
+              }
+            }
+          } else {
+            const holes = this.layers.match("Holes") === null ? [] : HoleLayerNames.map((l) => l.toString().trim().toLowerCase());
+            const viaLayers = Array.from(layers.via_layers()).map((l) => l.name);
+            const vias = this.layers.match("Vias") === null ? [] : viaLayers.map((l) => l.toString().trim().toLowerCase());
+            const padLayers = Array.from(layers.pad_layers()).map((l) => l.name);
+            const pads = this.layers.match("Pads") === null ? [] : padLayers.map((l) => l.toString().trim().toLowerCase());
+            const specifiedLayers = this.layers.split(",").map((l) => l.trim().toLowerCase());
+            const enabledLayers = [...holes, ...vias, ...pads, ...specifiedLayers];
+            for (const layer of layers.in_order()) {
+              layer.visible = enabledLayers.includes(layer.name.trim().toLowerCase());
             }
           }
           this.#board_app.viewer.zone_opacity = 0.1;
           this.#board_app.viewer.zoom_to_board();
           this.#board_app.layersPanel.update_item_states();
+          if (this.initialZoom !== null && this.initialX !== null && this.initialY !== null) {
+            this.#board_app.viewer.setOptions({
+              initialZoom: this.initialZoom,
+              initialX: this.initialX,
+              initialY: this.initialY
+            });
+          }
         });
       });
     }
@@ -38722,7 +38748,6 @@ __decorateClass([
   attribute({ type: String })
 ], KiCanvasEmbedElement.prototype, "zoom", 2);
 __decorateClass([
-  attribute({ type: Number }),
   attribute({ type: Number })
 ], KiCanvasEmbedElement.prototype, "initialZoom", 2);
 __decorateClass([
@@ -38731,6 +38756,9 @@ __decorateClass([
 __decorateClass([
   attribute({ type: Number })
 ], KiCanvasEmbedElement.prototype, "initialY", 2);
+__decorateClass([
+  attribute({ type: String })
+], KiCanvasEmbedElement.prototype, "layers", 2);
 window.customElements.define("kicanvas-embed", KiCanvasEmbedElement);
 var KiCanvasSourceElement = class extends CustomElement {
   constructor() {
