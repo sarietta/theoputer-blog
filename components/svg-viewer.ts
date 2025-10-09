@@ -105,10 +105,6 @@ background-color: #000;
         overlay?.classList.remove("has-focus");
       }
     });
-
-    // document.addEventListener("click", () => {
-    //   overlay?.classList.remove("has-focus");
-    // });
   }
 
   private _updateViewBox(objectElement: HTMLObjectElement | null | undefined) {

@@ -16,6 +16,21 @@ menus:
     weight: 20
     params:
       icon: simulator
+  # - name: Most-Recent Files
+  #   identifier: files
+  #   weight: 30
+  #   params:
+  #     icon: archives
+  # - name: Schematic
+  #   weight: 10
+  #   parent: files
+  #   params:
+  #     icon: schematic2
+  # - name: PCB
+  #   weight: 20
+  #   parent: files
+  #   params:
+  #     icon: pcb
 
 params:
     mainSections:

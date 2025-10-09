@@ -65,11 +65,11 @@ in-depth considerations:
 
 1. Data Bus
 1. Registers
+1. Clock
 1. Program Counter
 1. ALU
 1. Branch Control
 1. Instruction and Control
-1. Clock
 1. I/O
 1. Power
 1. RAM
@@ -100,6 +100,17 @@ speak to each other, and with 16bits of data. It's worth also noting
 that the data bus is often considered as two separate buses, a "low"
 8bit bus comprised of the lines ~~DBUS0~~ through ~~DBUS7~~ and a
 "high" 8bit bus comprised of lines ~~DBUS8~~ through ~~DBUS15~~.
+
+The only other thing worth mentioning here is that every connection
+*to* the data bus has an electrical component called a buffer, and
+ever connection *from* the data bus has another buffer. These buffers
+are like electrically-controllable breakers, so that if the buffer is
+disabled, it's as if there is a disconnected wire between the bus and
+whatever is on the other side of the buffer. This ensures that only
+one thing ever writes to the data bus at a time. That's important
+because if there were a scenario where two things tried to drive the
+data bus lines at the same time, we would have a phenomenon called bus
+contention, and bus contention makes circuits very unstable.
 
 ### Registers
 
@@ -193,10 +204,117 @@ overflow conditions of the ALU.
   dedicated reset signal and instruction but eventually had to
   acquiesce because all my other strategies created breaking bugs.
 
+### Clock
+
 ### Program Counter
+
+The program counter is very crucial to the operation of the Theoputer
+and almost every CPU out there. Maybe every CPU out there. Its job is
+to keep track of where in the instruction list (program) the CPU
+currently is located. So if you have a list of three instructions to
+execute like:
+
+```nasm
+LAX
+JPA
+HLT
+```
+
+The program counter will start at 0, then increase to 1, and finally 2
+before the ==HLT== instruction halts execution. This is a great time
+to recall the role of the clock in the Theoputer. Its job is to cause
+"the next thing to happen" and *one* of the ways the clock does that
+is by advancing the program counter! It's not exactly that simple
+because the clock also needs to advance the microcoder (see the
+[Instruction and Control](#instruction-and-control) section for a bit
+more on that).
+
+The program counter isn't much more than a 16bit register (oh look!
+another kind of register) with some special control lines to make it
+easy to increment it by one and to set it to a specific value:
+
+<svg-viewer src="/img/daughter-board/Daughter Assembly.V8-20250912-Program Counter.svg" viewBoxX="20.188345712329422" viewBoxY="15.769628649032782" viewBoxWidth="311.23583843108383" viewBoxHeight="220.1242072646957">
+</svg-viewer>
+
+Notably this is a 16bit register, comprised of four separate
+"synchronous counters". There's more detail on this in the post about
+the [Program Counter]({{< iref "program-counter.md" >}}), so for now
+the most important thing to note is that there are two input control
+signals: ~~PI~~, and ~~PS~~. (Note: ~~CLR~~ isn't currently
+used). ~~PS~~ is set high whenever you want to perform a **P**rogram
+counter **S**tep operation and ~~PI~~ is set high for a **P**rogram
+counter **I**nput operation, which uses all 16 ~~DBUS~~ lines to set
+the program counter.
+
+To give a brief preview of how this typically works, consider the
+prior three instructions again:
+
+```nasm
+LAX
+JPA
+HLT
+```
+
+While there is no actual microcoder assembly language, we could look
+at these three instructions in a fake microcoder language as:
+
+```nasm
+;; LAX (PC = 0)
+XO, AI
+PS
+;; JPA (PC = 1)
+AO, PI
+;; HLT (PC = RegA)
+HLT
+```
+
+You can see from above that after many instructions we set the ~~PS~~
+signal active indicating to the CPU to go to the next instruction in
+order. However, jump-like operations directly set the program counter
+to indicate to the CPU that the next instruction is at a specific
+address. In the contrived case above you'll have to put on your
+imagination creation hat and assume that the contents of Register X
+were 2.
 
 ### I/O
 
+Even on the first fully-assembled Theoputer there was I/O! That may
+seem like an overreach, but how else can you expect to speak to the
+rest of the world without some I/O. The I/O system has also moved
+around the most, but is currently nestled in the top left part of the
+board:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="11.178473634832965" initialX="30.50084378374209" initialY="49.326139918727655"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, Pads, F.Silkscreen"
+    controls="basic+"></kicanvas-embed>
+
+That is both the set of chips that make the I/O go and the actual
+plug/headers/port itself. Hey look! Another register:
+
+<svg-viewer src="/img/daughter-board/Daughter Assembly.V8-20250912.svg" viewBoxX="112.0089751341146" viewBoxY="262.64698137425654" viewBoxWidth="202.8946179884302" viewBoxHeight="143.4989529744207">
+</svg-viewer>
+
+The I/O interface is a bit complicated. There is a fairly intricate
+dance that has to take place to ensure that only I (input) or O
+(output) is happening at one time and to ensure that data that is
+outbound stays valid long enough for whatever is outside the CPU to
+read it. There's also a bit of signaling that is available to I/O
+devices that tells them when it's safe to read/write to help
+coordinate everything. As usual, the post about the
+[I/O Interface]({{< iref "io-interface.md" >}}) is a better place to
+learn the details.
+
+At a high level the I/O interface is intended to "look" like another
+register to the CPU. All of those gates and that register are there to
+give the illusion that this is just like Register A. Of course that's
+not true and if the I/O device is quite slow then it will not operate
+timing-wise like Register A, but reading/writing does work exactly the
+same way. As you can see there are the usual ~~DBUS0~~ through
+~~DBUS7~~ data bus lines, a couple buffers to ensure only input or
+output is happening, and there is a register to hold on to the output
+data until another output operation (via ~~^QI^~~) is encountered.
 
 ### ALU
 
@@ -204,9 +322,6 @@ overflow conditions of the ALU.
 ### Branch Control
 
 ### Instruction and Control
-
-
-### Clock
 
 
 ### Power
