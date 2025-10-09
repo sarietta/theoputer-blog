@@ -126,6 +126,46 @@
     }
 }
 
+.sub-menu {
+    list-style: none;
+    overflow-y: auto;
+    flex-grow: 1;
+    font-size: 1.4rem;
+    background-color: var(--card-background);
+
+    box-shadow: var(--shadow-l1);
+    display: none;
+    margin: 0 calc(var(--container-padding) * -1);
+
+    padding: 30px 30px;
+
+    @include respond(xl) {
+      padding: 15px 0;
+    }
+
+    & {
+      flex-direction: column;
+      gap: 10px;
+
+      @include respond(xl) {
+        gap: 25px;
+      }
+    }
+
+    &.show {
+      display: flex;
+    }
+
+    @include respond(md) {
+      align-items: flex-end;
+      display: flex;
+      background-color: transparent;
+      padding: 0;
+      box-shadow: none;
+      margin: 1rem 2rem;
+    }
+}
+
 /* Menu style */
 #main-menu {
     list-style: none;
@@ -183,7 +223,6 @@
         }
 
         a {
-            height: 100%;
             display: inline-flex;
             align-items: center;
             color: var(--body-text-color);
