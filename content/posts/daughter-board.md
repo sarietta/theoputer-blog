@@ -318,11 +318,192 @@ data until another output operation (via ~~^QI^~~) is encountered.
 
 ### ALU
 
+If there is a "brain" of the CPU then it's probably safe to say that's
+the [Arithmetic Logic Unit]({{< iref "alu.md" >}}) (ALU). Typically if
+you're using a computer you want it to *compute* something and
+typically that computation will involve an operation handled by the
+ALU. Here are things that the Theoputer currently can compute:
+
+- Addition
+- Subtraction
+- Bit Shift (Left and Right)
+- Bitwise AND
+- Bitwise XOR
+
+All of the operations work on 8bit inputs, which as usual come from
+the ~~DBUS~~ lines.
+
+On this grand tour of the daughter board, the ALU is one of the more
+special stops because it is one of the few remaining actual boards
+that is plugged in to the daughter board. You can see the headers
+where that happens in the top right corner of the daughter board:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="9.914416718037241" initialX="148.51761323037863" initialY="44.219222007464815"
+    layers="Edge.Cuts, F.SilkS, Holes, F.Silkscreen"
+    controls="basic+"></kicanvas-embed>
+
+Here you can see the two input bytes labeled A0 - A7 and B0 - B7. The
+signals connected to these inputs are ~~DBUS0~~-~~DBUS7~~ and
+~~DBUS8~~-~~DBUS15~~ respectively. Here you can see that we are using
+the 16bit-wide data bus to our advantage so that we don't need to
+individually load each byte to operate on before performing the
+operation. That decision comes at a cost though because it means two
+things:
+
+1. We need to support 16 data buses, which is more lines to manage
+1. We need to have some way to read/write to the bottom/top bytes of
+the data bus independently
+
+That last point is why [Register B](#registers-a-b-y-and-z) has the
+special property that it can read/write from/to the
+~~DBUS8~~-~~DBUS15~~ lines.
+
+Also noteworthy about the ALU interface are the X0 - X7
+connections. Recall that there is a special ALU output register
+([Register X](#alu-register-x)) that holds on to the last ALU
+operation. Those X lines connect to that register, which itself is
+actually on the daughter board not on the ALU board:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="9.914416718037241" initialX="126.73115759279911" initialY="43.311453022565715"
+    layers="Edge.Cuts, F.SilkS, Holes, Pads, F.Fab, F.Silkscreen, F.Cu:0.5, Vias, B.Cu:0.5"
+    controls="basic+"></kicanvas-embed>
+
+It's a bit challenging to follow the traces but you should see that
+the X outputs from the ALU board connect to the REG X block.
 
 ### Branch Control
 
+At first it may seem odd to have a section dedicated to branch
+control, but it turns out that supporting branches isn't as trivial as
+just reusing other parts of the Theoputer. If you're familiar with
+modern CPU architectures you may be inclined to think that this
+section has something to do with branch *prediction*, but it does not!
+That is a much more complex feature of CPUs that is important only
+when dealing with super scalar architecture, and the Theoputer is a
+regular old scalar CPU as discussed in the post about the [Clock]({{<
+iref "clock.md#tik-tok-goes-the-little-clock" >}}).
+
+On the most-recent versions of the daughter board the branch control
+logic isn't labeled, but it is all grouped in the same area under the
+Clock board:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="18.61541371702186" initialX="50.66787517387787" initialY="102.18780716777998"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, Pads, F.Silkscreen"
+    controls="basic+"></kicanvas-embed>
+
+That's not very instructive on how the branch control works, so let's
+look at the schematic:
+
+<svg-viewer
+    src="/img/daughter-board/Daughter Assembly.V8-20250912-BranchControl.svg"
+    viewBoxX="6.398861377261755" viewBoxY="5.041999844113352" viewBoxWidth="286.6986756191594" viewBoxHeight="202.82406307100106"
+    >
+</svg-viewer>
+
+Here we see there is a regster (ahoy there!), connected to a chip that
+outputs if that register contains zero, and a few inputs:
+
+- ~~OP0~~ and ~~OP1~~ which control the type of branching as a 2bit number:
+  - 1: X == 0
+  - 2: X >= 0
+  - 3: x < 0
+- ~~X0~~ through ~~X7~~ which is labeled vestigially incorrect and
+  actually connects to ~~DBUS0~~ through ~~DBUS7~~
+- ~~PI~~ which you may recall from the
+  [Program Counter](#program-counter) section and is a control signal
+  dictating that the CPU should set the program counter to the value
+  on the ~~DBUS~~ lines.
+
+There are some oddities you may note in the list above. For specifics,
+refer to the more in-depth post on the [Branch Control]({{< iref
+"branch-control.md" >}}).
+
 ### Instruction and Control
 
+This one is a douzy (spelling?). It's by far the most complex section
+of the Theoputer save for maybe the daughter board itself. There are
+several posts about this section, which is actually one of the three
+remaining plug-in boards to the daughter board. Start off on the
+introduction post about the [Instruction and Control]({{< iref
+"instruction-and-control.md" >}}) board to go deep on that.
+
+For now, we can see how the Instuction and Control (I&C) board
+interfaces with the daughter board and thus the rest of the Theoputer:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="6.449418243960037" initialX="120.00951593010316" initialY="116.25046143185311"
+    layers="Edge.Cuts, F.SilkS, Holes, F.Silkscreen"
+    controls="basic+"></kicanvas-embed>
+
+That large outline is where the I&C board plugs in, and has you can
+(hopefully) see, there are six separate headers each of which is
+16pins! That's a lotta pins. Not every pin is used, although most
+are. At this small 1.27m pitch (distance between pins) it's far easier
+to source the correct headers when they're all the same length. They
+are, somewhat unfortunately, too small to get strong-enough pins that
+can be broken to the correct length.
+
+Let's look at the schematic here too because this is another case
+where that's helpful:
+
+<svg-viewer
+    viewBoxX="121.7942001579821" viewBoxY="96.41435042113991" viewBoxWidth="215.3767254432108" viewBoxHeight="152.32703017249284"
+    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg">
+</svg-viewer>
+
+That certainly is easier to see, but that's still a lot of lines!
+Let's just go over some of the big groups:
+
+- ~~PC0~~ through ~~PC15~~: The 16bit program counter value as an *input*
+- ~~INST0~~ through ~~INST15~~: The 16bit wide instruction *input*
+- ~~IR0~~ through ~~IR11~~: The instruction register (oh haiii)
+*output* connected to the bottom 12bits of the ~~DBUS~~ lines
+- A bunch of control lines like ~~^AI^~~ and ~~^AO^~~ that are used
+  to control register input/output modes respectively.
+- ~~^CR^~~: Used to reset the
+  [CPU Status Register](#cpu-status-register) to 0
+- ~~^SO^~~, ~~^SI^~~, ~~^SP_DECR^~~, and ~~^SP_INCR^~~: Used to
+  control/use the [stack pointer](#stack-pointer) via an output
+  signal, input signal, and an increment or decrement signal
+  respectively.
+- ~~BO_HI~~: Used to control [Register B's]() read/write to the high
+  data bus byte on ~~DBUS8~~ through ~~DBUS15~~ versus the usual lower
+  byte on ~~DBUS0~~ through ~~DBUS7~~.
+- ~~RS~~: The global reset signal, intended to be used by various
+  systems to reset themselves to the "start" of execution.
+- ~~J0~~ and ~~J1~~: Connected to the ~~OP0~~ and ~~OP1~~ of the
+  [branch control](#branch-control) system to choose which kind of
+  branching operation to perform.
+- ~~HL~~: The global halt signal, which stops the clock output
+  effectively halting the system.
+- ~~^MA^~~: Used to control whether the [memory](#ram) address
+  register should be read from ~~DBUS~~.
+- ~~PI~~: Used to control whether the program counter should be set
+  from the ~~DBUS~~ lines.
+- ~~PS~~: Used to control whether the pgoram counter should be
+  incremented (stepped).
+- ~~ALU0~~ through ~~ALU3~~: Used to control which [ALU](#alu)
+  operation should be performed.
+- ~~STEP~~: An *output* from the I&C board indicating that on the next
+  ~~↓CLK~~ there will be a step-like operation (i.e. the program
+  counter will change).
+- ~~EXEC_MODE_RAM~~: An *output* signal that indicates whether instructions
+  should be fetched and executed from RAM (high) or from ROM (low).
+- ~~^ROM^~~: An *input* signal that allows the other Theoputer systems
+  to indicate that the I&C board should enable (low) or disable (high)
+  the ROM chips.
+
+Phew. That's a lot. Probably enough for this entire section, so let's
+leave it at that for now and if you want to read more of the details
+check out that beach head post on the [Instruction and Control]({{<
+iref "instruction-and-control.md" >}}) board.
 
 ### Power
 
