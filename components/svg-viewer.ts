@@ -204,7 +204,9 @@ background-color: #000;
 
   onMouseDown(event: MouseEvent) {
     if (event.shiftKey) {
-      console.log(`viewBoxX="${this.viewBoxX}" viewBoxY="${this.viewBoxY}" viewBoxWidth="${this.viewBoxWidth}" viewBoxHeight="${this.viewBoxHeight}"`);
+      const message = `viewBoxX="${this.viewBoxX}" viewBoxY="${this.viewBoxY}" viewBoxWidth="${this.viewBoxWidth}" viewBoxHeight="${this.viewBoxHeight}"`;
+      console.log(message);
+      navigator.clipboard.writeText(message).catch((error) => console.error(error));
     }
 
     this.isPanning = true;

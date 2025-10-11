@@ -104,9 +104,6 @@ background-color: #000;
                 overlay?.classList.remove("has-focus");
             }
         });
-        // document.addEventListener("click", () => {
-        //   overlay?.classList.remove("has-focus");
-        // });
     }
     _updateViewBox(objectElement) {
         if (!this.viewBox || !objectElement)
@@ -192,7 +189,9 @@ background-color: #000;
     }
     onMouseDown(event) {
         if (event.shiftKey) {
-            console.log(`viewBoxX="${this.viewBoxX}" viewBoxY="${this.viewBoxY}" viewBoxWidth="${this.viewBoxWidth}" viewBoxHeight="${this.viewBoxHeight}"`);
+            const message = `viewBoxX="${this.viewBoxX}" viewBoxY="${this.viewBoxY}" viewBoxWidth="${this.viewBoxWidth}" viewBoxHeight="${this.viewBoxHeight}"`;
+            console.log(message);
+            navigator.clipboard.writeText(message).catch((error) => console.error(error));
         }
         this.isPanning = true;
         this.lastMouseX = event.clientX;

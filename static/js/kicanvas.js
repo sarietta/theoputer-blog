@@ -7960,6 +7960,7 @@ var SchematicDrawingSettings = class {
 
 // src/kicanvas/project.ts
 var log2 = new Logger("kicanvas:project");
+var docCache = /* @__PURE__ */ new Map();
 var Project = class extends EventTarget {
   constructor() {
     super(...arguments);
@@ -8030,8 +8031,19 @@ var Project = class extends EventTarget {
     if (this.#files_by_name.has(filename)) {
       return this.#files_by_name.get(filename);
     }
-    const text = await this.#get_file_text(filename);
-    const doc = new document_class(filename, text);
+    let docPromise = docCache.get(filename);
+    if (!docPromise) {
+      docPromise = new Promise((resolve) => {
+        this.#get_file_text(filename).then((text) => {
+          const doc2 = new document_class(filename, text);
+          resolve(doc2);
+        });
+      });
+      docCache.set(filename, docPromise);
+    } else {
+      console.log(`Cache hit on: ${filename}`);
+    }
+    const doc = await docPromise;
     doc.project = this;
     this.#files_by_name.set(filename, doc);
     if (doc instanceof KicadPCB) {
@@ -32225,7 +32237,11 @@ var EDAText = class {
    */
   apply_at(at) {
     this.text_pos = at.position.multiply(1e4);
-    this.text_angle = Angle.from_degrees(at.rotation);
+    if (at.rotation == 270) {
+      this.text_angle = Angle.from_degrees(90.1);
+    } else {
+      this.text_angle = Angle.from_degrees(at.rotation);
+    }
   }
   /** The processed text that will be used for rendering */
   get shown_text() {
@@ -33404,7 +33420,11 @@ var PanAndZoom = class {
       }
       this.lastMouseX = e.clientX;
       this.lastMouseY = e.clientY;
-      console.log(`initialZoom="${this.camera.zoom}" initialX="${this.camera.center.x}" initialY="${this.camera.center.y}"`);
+      if (e.shiftKey) {
+        const message = `initialZoom="${this.camera.zoom}" initialX="${this.camera.center.x}" initialY="${this.camera.center.y}"`;
+        console.log(message);
+        navigator.clipboard.writeText(message).catch((error) => console.error(error));
+      }
     });
     this.target.addEventListener("mousemove", (e) => {
       if (dragging && dragStartPosition !== null) {
@@ -33627,6 +33647,7 @@ var Viewport = class {
 };
 
 // src/viewers/base/viewer.ts
+var setupMutex = null;
 var Viewer = class extends EventTarget {
   constructor(canvas, interactive = true) {
     super();
@@ -33656,33 +33677,45 @@ var Viewer = class extends EventTarget {
     this.viewport.setOptions(options);
   }
   async setup(options) {
-    this.renderer = this.disposables.add(this.create_renderer(this.canvas));
-    await this.renderer.setup();
-    this.viewport = this.disposables.add(
-      new Viewport(this.renderer, () => {
-        this.on_viewport_change();
-      })
-    );
-    if (this.interactive) {
-      this.viewport.enable_pan_and_zoom(0.5, 190);
-      this.disposables.add(
-        listen(this.canvas, "mousemove", (e) => {
-          this.on_mouse_change(e);
-        })
-      );
-      this.disposables.add(
-        listen(this.canvas, "panzoom", (e) => {
-          this.on_mouse_change(e);
-        })
-      );
-      this.disposables.add(
-        listen(this.canvas, "click", (e) => {
-          const items = this.layers.query_point(this.mouse_position);
-          this.on_pick(this.mouse_position, items);
-        })
-      );
+    if (setupMutex === null) {
+      setupMutex = new Promise((resolve) => {
+        this.renderer = this.disposables.add(this.create_renderer(this.canvas));
+        this.renderer.setup().then(() => {
+          this.viewport = this.disposables.add(
+            new Viewport(this.renderer, () => {
+              this.on_viewport_change();
+            })
+          );
+          if (this.interactive) {
+            this.viewport.enable_pan_and_zoom(0.5, 190);
+            this.disposables.add(
+              listen(this.canvas, "mousemove", (e) => {
+                this.on_mouse_change(e);
+              })
+            );
+            this.disposables.add(
+              listen(this.canvas, "panzoom", (e) => {
+                this.on_mouse_change(e);
+              })
+            );
+            this.disposables.add(
+              listen(this.canvas, "click", (e) => {
+                const items = this.layers.query_point(this.mouse_position);
+                this.on_pick(this.mouse_position, items);
+              })
+            );
+          }
+          this.setup_finished.open();
+          resolve();
+        });
+      });
+      await setupMutex;
+      setupMutex = null;
+    } else {
+      setTimeout(() => {
+        this.setup(options);
+      }, 0);
     }
-    this.setup_finished.open();
   }
   on_viewport_change() {
     if (this.interactive) {
@@ -38700,10 +38733,22 @@ var KiCanvasEmbedElement = class extends KCUIElement {
             const vias = this.layers.match("Vias") === null ? [] : viaLayers.map((l) => l.toString().trim().toLowerCase());
             const padLayers = Array.from(layers.pad_layers()).map((l) => l.name);
             const pads = this.layers.match("Pads") === null ? [] : padLayers.map((l) => l.toString().trim().toLowerCase());
-            const specifiedLayers = this.layers.split(",").map((l) => l.trim().toLowerCase());
+            const layerOpacities = {};
+            const specifiedLayers = this.layers.split(",").map((layer) => {
+              let name = layer.trim().toLowerCase();
+              if (layer.includes(":")) {
+                name = layer.split(":")[0]?.trim().toLowerCase() ?? name;
+                layerOpacities[name] = Number(layer.split(":")[1]);
+              }
+              return name;
+            });
             const enabledLayers = [...holes, ...vias, ...pads, ...specifiedLayers];
             for (const layer of layers.in_order()) {
-              layer.visible = enabledLayers.includes(layer.name.trim().toLowerCase());
+              const name = layer.name.trim().toLowerCase();
+              if (layerOpacities[name]) {
+                layer.opacity = layerOpacities[name];
+              }
+              layer.visible = enabledLayers.includes(name);
             }
           }
           this.#board_app.viewer.zone_opacity = 0.1;
