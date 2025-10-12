@@ -4,6 +4,7 @@ description = "The Arithmetic Logic Unit (ALU) is the Theoputer's core computati
 date = 2024-12-30T11:32:03-08:00
 draft = false
 math = true
+categories = ['Sub Systems', 'Computer Engineering']
 +++
 
 ## Introduction
@@ -347,5 +348,5 @@ on [ALU Subtraction]({{<iref "alu-subtraction" >}}) is what you want.
 <!-- Local Variables: -->
 <!-- gptel-model: gemini-2.5-flash -->
 <!-- gptel--backend-name: "Gemini" -->
-<!-- gptel--bounds: ((response (61 205) (3653 3654) (4415 4416) (5944 5945) (6411 6412) (6832 6833))) -->
+<!-- gptel--bounds: ((response (61 205) (3706 3707) (4468 4469) (5997 5998) (6464 6465) (6885 6886))) -->
 <!-- End: -->

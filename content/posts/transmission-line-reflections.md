@@ -3,6 +3,8 @@ title = 'Transmission Line Reflections'
 description = 'What started as a seemingly small issue with the IRQ circuit turned into a very deep, very subtle expedition into an important property of circuits I never knew about.'
 date = 2024-11-09T13:49:41-08:00
 draft = false
+categories = ['Debugging', 'Electrical Engineering']
+image = 'img/transmission-line-reflections/header.png'
 +++
 
 ## Introduction

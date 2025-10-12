@@ -52,6 +52,9 @@ params:
             local: true
             src: img/avatar.png
     widgets:
+      homepage:
+        - type: search
+        - type: categories
       page:
         - type: toc
     comments:

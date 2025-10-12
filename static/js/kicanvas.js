@@ -33774,7 +33774,6 @@ var Viewer = class extends EventTarget {
     this.select(selected);
   }
   select(item) {
-    this.selected = item;
   }
   get selected() {
     return this.#selected;
@@ -33783,32 +33782,13 @@ var Viewer = class extends EventTarget {
     this._set_selected(bb);
   }
   _set_selected(bb) {
-    const previous = this.#selected;
     this.#selected = bb?.copy() || null;
-    this.dispatchEvent(
-      new KiCanvasSelectEvent({
-        item: this.#selected?.context,
-        previous: previous?.context
-      })
-    );
     later(() => this.paint_selected());
   }
   get selection_color() {
     return Color.white;
   }
   paint_selected() {
-    const layer = this.layers.overlay;
-    layer.clear();
-    if (this.#selected) {
-      const bb = this.#selected.copy().grow(this.#selected.w * 0.1);
-      this.renderer.start_layer(layer.name);
-      this.renderer.line(
-        Polyline2.from_BBox(bb, 0.254, this.selection_color)
-      );
-      this.renderer.polygon(Polygon2.from_BBox(bb, this.selection_color));
-      layer.graphics = this.renderer.end_layer();
-      layer.graphics.composite_operation = "overlay";
-    }
     this.draw();
   }
   zoom_to_selection() {

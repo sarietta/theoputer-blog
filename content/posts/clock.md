@@ -4,6 +4,8 @@ description = "Getting from an analog oscillating voltage to a nice sharp digita
 date = 2025-09-15T21:52:12-07:00
 draft = false
 math = true
+categories = ['Sub Systems', 'Electrical Engineering']
+image = 'img/clock/header.png'
 +++
 
 ## Introduction

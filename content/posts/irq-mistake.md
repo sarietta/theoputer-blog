@@ -2,6 +2,7 @@
 title = 'Irq Mistake'
 date = 2024-10-11T20:05:01-07:00
 draft = false
+categories = ['Debugging', 'Electrical Engineering', 'Computer Engineering']
 +++
 
 ## Introduction

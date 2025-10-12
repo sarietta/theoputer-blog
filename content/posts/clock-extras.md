@@ -4,6 +4,7 @@ description = "The CPU clock isn't just an oscillator. It also includes some spe
 date = 2025-09-21T14:17:11-07:00
 draft = false
 math = true
+categories = ['Sub Systems', 'Computer Engineering']
 +++
 
 ## Introduction
@@ -156,7 +157,7 @@ instruction that would pause the computer at a specific point in
 execution, switch over to manual stepper mode, and then start stepping
 through instructions.
 
-To enable this behaviod we need two things:
+To enable this behavior we need two things:
 
 1. A control signal that can inhibit/enable the clock signal
 1. A way to override the control signal to step over the instruction that set it

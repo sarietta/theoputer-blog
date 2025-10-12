@@ -4,6 +4,7 @@ date = 2025-09-14T13:30:10-07:00
 description = "Two's complement is nothing novel, but it usually just gets presented as a list of rules. Here we explore why two's complement works, and how it's used in the Theoputer to enable subtraction."
 draft = false
 math = true
+categories = ['Sub Systems', 'Computer Engineering']
 +++
 
 ## Introduction

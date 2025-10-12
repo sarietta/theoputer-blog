@@ -4,6 +4,8 @@ description = "Printed circuit boards are amazing but introduce all sorts of com
 date = 2025-09-27T14:11:44-07:00
 draft = false
 math = true
+categories = ['Debugging', 'Electrical Engineering']
+image = 'img/ground-noise/header.png'
 +++
 
 ## Introduction
@@ -285,10 +287,10 @@ charge slower, decreasing the rise/fall time.
 ### Large Current Loops
 
 There's another issue with high inductance that is more
-subtle. Normally we don't differentiate between impedence and
+subtle. Normally we don't differentiate between impedance and
 resistance. That's because for low-frequency DC-like signals,
-resistance is the same as impedence. But for high-frequency signals
-inductance becomes the more prominent term in the impedence equation:
+resistance is the same as impedance. But for high-frequency signals
+inductance becomes the more prominent term in the impedance equation:
 
 $$
 \begin{align*}
@@ -299,7 +301,7 @@ Z_{capacitor} &= \frac{1}{j\omega C}\\
 \end{align*}
 $$
 
-Since signals will take the lowest impedence path to ground, if the
+Since signals will take the lowest impedance path to ground, if the
 inductance is high near the closest ground paths, they won't be taken!
 That will cause larger loops of current to form as the signal return
 current goes through the longer loop. Large loops can start to look
