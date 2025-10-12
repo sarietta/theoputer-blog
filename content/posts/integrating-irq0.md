@@ -1,5 +1,6 @@
 +++
 title = 'Integrating IRQ0'
+description = "Simply stop doing what you're doing. Save all your work very quickly. Completely change your task. Plod along and then go back to what you were originally doing. Do all that fast. Interrupt requests are so simple."
 date = 2024-10-07T09:16:28-07:00
 draft = false
 categories = ['Sub Systems', 'Computer Engineering']

@@ -1,5 +1,6 @@
 +++
 title = 'Irq Mistake'
+description = "Everyone makes mistakes and I make a lot of them. The initial approach to the IRQ board had some problems with the SR latch, but maybe I've finally fixed it..."
 date = 2024-10-11T20:05:01-07:00
 draft = false
 categories = ['Debugging', 'Electrical Engineering', 'Computer Engineering']
@@ -241,3 +242,14 @@ careful attention to note that the ~~^K^~~ input is *inverted*:
 | 1   | 1   | ↑   | 0 | 1   | No Change | No Change |
 | 1   | 1   | ↑   | 1 | 1   | 1         | 0         |
 | 1   | 1   | 0   | X | X   | No Change | No Change |
+
+## Spoiler Alert (Update)
+
+Well it turns out the issue with the IRQ board was **much** deeper
+than what's written about above. The issues detailed above are still
+valid, but they don't appear to the be the root cause of the
+issues. The real cause seems to be in the instability of the
+*clocking* signal! Oh boy. Better rush over to the analysis of
+[Transmission Line Reflections]({{< iref
+"transmission-line-reflections.md" >}}) to learn about that proverbial
+enchilada.

@@ -1,5 +1,6 @@
 +++
 title = 'Simulator Intro'
+description = "What's a computer without a proper simulator, amirite?! Yes, there is a Theoputer simulator. And yes it's probably overengineered. And yes, there's a C compiler, but that's covered elsewhere."
 date = 2025-09-29T22:15:01-07:00
 draft = false
 math = true

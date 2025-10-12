@@ -12,6 +12,16 @@
 
     {{- partial "pagination.html" . -}}
     {{- partial "footer/footer" . -}}
+
+<script src="https://unpkg.com/infinite-scroll@5/dist/infinite-scroll.pkgd.min.js"></script>
+
+<script>
+let infScroll = new InfiniteScroll(document.querySelector(".article-list"), {
+     path: 'a.page-link',
+     append: 'article',
+});
+</script>
+
 {{ end }}
 
 {{ define "right-sidebar" }}
