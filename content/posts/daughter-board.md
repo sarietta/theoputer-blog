@@ -1,7 +1,13 @@
 +++
 title = 'Daughter Board'
+description = 'Despite being poorly named, this is a really important part of the Theoputer. It really acts as a starting point for understanding all of the parts of the computer from an integration level perspective.'
 date = 2024-12-20T22:08:56-08:00
-draft = true
+draft = false
+math = true
+weight = 43
+image = 'img/daughter-board/header.png'
+categories = ['Sub Systems']
+tags = []
 +++
 
 ## Introduction
@@ -75,6 +81,13 @@ in-depth considerations:
 1. RAM
 1. Stack Pointer
 1. SD Card
+
+Before we look at each of the sections, just take a mental note that
+every single chip on the board has at least one 0.1uF capacitor right
+next to its VCC pad. Some have an additional 1uF capacitor. These are
+decoupling capacitors and are critical to ensuring the board is light
+on [ground noise]({{< iref "ground-noise.md" >}}), which is a much
+deeper concept worth reading about at your leisure.
 
 ### Data Bus
 
@@ -205,6 +218,38 @@ overflow conditions of the ALU.
   acquiesce because all my other strategies created breaking bugs.
 
 ### Clock
+
+The clock is one of the three remaining boards that plug into the
+Theoputer daughter board. You can see the outline of the most-recent
+version of the clock in the daughter board here:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="14.210625110171355" initialX="46.008702823473605" initialY="98.99863921570636"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, F.Silkscreen"
+    controls="basic+"></kicanvas-embed>
+
+The clock itself is small but mighty. It's also one of the few
+analog-like circuits in the entire computer, so while it is physically
+small it's rather complex. There are several posts about how the clock
+works, starting with an [overview]({{< iref "clock.md" >}}) of some
+clock basics.
+
+The interface to the clock board used to be very simple, consisting
+only of the the ~~CLK~~ and ~~^CLK^~~ as output signals (180&deg; out
+of phase) and ~~HLT~~ as an input signal.
+
+To facilitate external controls of the clock speed and type (manual
+step, adjustable, and built-in 1.8432MHz oscillator) there are now
+some pins at the bottom of the board that connect to fancy
+plugs/headers on the daugher board itself.
+
+The only other thing worth noting here are the two resistors near the
+top of the board, right by the ~~CLK~~ and ~~^CLK^~~ labels. These are
+the transmission line source resistors we needed to add after
+discovering that the clock lines were action like
+[tranmission lines]({{< iref "transmission-line-reflections.md" >}}).
+
 
 ### Program Counter
 
@@ -507,11 +552,197 @@ iref "instruction-and-control.md" >}}) board.
 
 ### Power
 
+Providing power should be easier right? Haha! Think again. Nothing's
+easy in the land of electrons! Well it *can* be easy and in fact for
+many versions was just a USB-C port connected directly to the main
+~~VCC~~ power line. That changed between V6 and V7 whereupon the power
+system got an upgrade to be more robust:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="10.474983933423788" initialX="28.02231950155481" initialY="125.06475900722437"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, F.Silkscreen, F.Cu:0.5, Vias:0.5, B.Cu:0.5, Pads"
+    controls="basic+"></kicanvas-embed>
+
+There's fairly clearly an ON/OFF switch and a USB-C port at the
+bottom. But in between those two components is a bunch of capacitors
+(to help with power delivery during high-load spikes) and a chip
+that's hard to see in the board view, but easier to see in the
+schematic:
+
+<svg-viewer
+    viewBoxX="331.73271162830054" viewBoxY="167.82024459806897" viewBoxWidth="139.013930651118" viewBoxHeight="98.31879078444405"
+    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg">
+</svg-viewer>
+
+That chip is the NCP380HSN05AAT1G, which is a power switch used very
+frequently in USB hubs. In this case, the specific chip has a fixed
+output current of 0.5A, which is currently (pun intended) enough for
+the Theoputer. Notably, this chip does **not** handle the USB 3.*
+(which is synonymous with USB-C) power negotiation protocol, so it has
+to be plugged in to a USB-A port on the providing end.
 
 ### RAM
 
+Originally RAM was only used in the Theoputer as a place where
+programs could store and retrieve data to/from. Much like the
+computers of yore it became clear, eventually, that using RAM to also
+be able to store *instructions* was a game changer. At that moment,
+the RAM system became a lot more complicated.
+
+It's hard to show on the board where RAM is nowadays with this added
+complexity, but it's roughly here:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="10.600893512329407" initialX="101.30322649715573" initialY="110.3255754571179"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, F.Silkscreen, F.Cu:0.5, Vias:0.5, B.Cu:0.5, Pads"
+    controls="basic+"></kicanvas-embed>
+
+Without diving into the internals of how the RAM system works (that
+you can find in the dedicated [RAM]({{< iref "ram.md" >}}) post),
+here's the schematic of the daugher board interface to it:
+
+<svg-viewer
+    viewBoxX="428.2962528796617" viewBoxY="226.01953853672882" viewBoxWidth="185.51462935076557" viewBoxHeight="131.20680744124337"
+    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg">
+</svg-viewer>
+
+The gates and the JK flip-flop are there to help coordinate the
+handoff between executing instructions from ROM (the default) to
+executing them from RAM. There is a dedicated post to that upgrade as
+well, describing how the Theoputer [executes RAM instructions]({{<
+iref "ram-instructions.md" >}}).
+
+For now the important things to note are that there are a set of
+control lines that determine whether RAM should output its contents to
+the ~~INST{0-15}~~ instruction bus (~~^ROM^~~, ~~EXEC_MODE_RAM~~, and
+~~STEP~~) and there are a set of control lines for the memory itself
+to control the address to operate on (~~^MA^~~) and whether the
+operation is an input (~~^MI^~~) or an output (~~^MO^~~).
 
 ### Stack Pointer
 
+This is one of those sections that you learn about in some course
+about programming or assembly or computer architecture. Assuming
+you've gone through the pedagogy, the idea of a stack pointer (or at
+least a "stack") will not be foreign. But does it make sense *why*
+this is important? The earlier versions of the Theoputer didn't have a
+dedicated stack pointer and they worked just fine. Well fine enough.
+
+But without a dedicated stack pointer, you would inevitably discover
+why dedicated stack pointers are *incredibly* useful. There are, of
+course, more details in the post about the Theoputer
+[Stack Pointer]({{< iref "stack-pointer.ms" >}}), so you'll have to
+convince yourself or read that post to understand why the Theoputer
+dedicates a fairly sizeable portion of the board to it:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="16.928353398187834" initialX="156.77955661811274" initialY="129.43455384905445"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, F.Silkscreen, F.Cu:0.5, Vias:0.5, B.Cu:0.5, Pads"
+    controls="basic+"></kicanvas-embed>
+
+In the section describing the
+[Instruction and Control signals](#instruction-and-control) there are
+details about the signals that control the stack pointer, but here
+they are again for posterity:
+
+- ~~^SO^~~, ~~^SI^~~, ~~^SP_DECR^~~, and ~~^SP_INCR^~~: Used to
+  control/use the stack pointer via an output signal, input signal,
+  and an increment or decrement signal respectively.
 
 ### SD Card
+
+This is the newest part of the Theoputer and it's not even be
+validated as working as of writing this! SD Cards have their own
+protocols (some of which are now proprietary) and all of which operate
+at voltage levels below the Theoputer's 5V. So much of the SD Card
+area is occupied by power regulation:
+
+<kicanvas-embed
+    src="/pcb/Daughter Assembly.V8-20250912.kicad_pcb"
+    initialZoom="16.346109729612404" initialX="164.85722811472618" initialY="37.96589742207243"
+    layers="Edge.Cuts, F.Fab, F.SilkS, Holes, F.Silkscreen, F.Cu:0.5, Vias:0.5, B.Cu:0.5, Pads"
+    controls="basic+"></kicanvas-embed>
+
+Once again that's likely hard to understand, and once again there is a
+dedicated post about the [SD Card Interface]({{< iref
+"sd-card-interface.md" >}}) and once again the schematic is
+potentially more useful:
+
+<svg-viewer
+    viewBoxX="277.9115348334778" viewBoxY="257.37718711989106" viewBoxWidth="209.04252780809765" viewBoxHeight="147.8471147484986"
+    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg">
+</svg-viewer>
+
+Here we see the voltage regulator (MIC5504-3.3YM5) responsible for
+converting the 5V VCC power rail into a stable (we hope) 3.3V needed
+by the SD Card Protocol. There are also several capacitors to help
+with current spikes, which are fairly likely in this case when the
+card is inserted.
+
+Apart from that the SD Card interface works very similarly to the
+generic [I/O Interface](#io), with a register (howdy there!) for
+keeping output data valid for as long as we need and a buffer to the
+~~DBUS~~ lines to handle bus contention.
+
+One unique thing about the SD Card Protocol is that it is actually a
+*serial* protocol. That's actually a lot more common for peripheral
+protocols in computers than a *parallel* protocol, but the Theoputer
+is more of a parallel-leaning entity. This because of the 8bit nature
+of the computer. We always want to operate on 8bits at a time, which
+is similar to saying we want to work on 8bits in parallel. In some
+cases we even use 16bits (e.g. the [memory address register](#ram))
+but we certianly don't send one bit a time between parts of the
+system.
+
+There are a number of ways to convert parallel-like signals into
+serial-like signals. In the case of the SD Card interface we are using
+one of the simplest: just use a single bit at a time!. That's why
+there input to the first bit of the register (~~D0~~) is ~~DBUS0~~,
+which in turn is connected to ~~SD_SPI_MOSI~~ - the SD Card serial
+input line.
+
+You'll notice four additional lines coming out of the Theoputer and
+into the SD Card:
+
+- ~~SD_SPI_CLK~~: Used as the clocking signal for the SD Card and any
+  other SPI-compatible peripheral that's connected to the Theoputer.
+- ~~SD_SPI_CS~~: Used to indicate to the SD Card that it is the
+  peripheral that should read the serial data (~~SD_SPI_MOSI~~) and
+  serial clock (~~SD_SPI_CLK~~) lines.
+- ~~SPI_CS1~~: Used to indicate to a second SPI-compatible peripheral
+  that it should handle the serial data and serial clock lines.
+- ~~SPI_CS2~~: Used to indicate to a third SPI-compatible peripheral
+  that it should handle the serial data and serial clock lines.
+
+You may see something interesting in the information above. In the
+Theoputer, SD Cards are communicated to via something called the
+Serial Peripheral Interface protocol. This is a fairly standard
+protocol that many peripherals use and the Theoputer has some extra
+headers and pins to allow for other SPI peripherals to be connected.
+
+Finally, there are some lines coming out of the SD Card and into the
+Theoputer:
+
+- ~~SD_SPI_CS~~: Same signal as above, just as a helpful output to the computer.
+- ~~SD_SPI_CLK~~: Same signal as above, just as a helpful output to the computer.
+- ~~SD_SPI_MISO~~: The serial data line out from the SD card (or any other
+  connected SPI peripheral) and into the Theoputer
+- ~~SD_DAT1~~: SD Card signal line that is used for advanced
+  operations currently not implemented.
+- ~~SD_DAT2~~: SD Card signal line that is used for advanced
+  operations currently not implemented.
+- ~~SD_CD_B~~: A signal coming from the physical SD Card slot that asserts
+  high when an SD Card is inserted.
+
+## Wrap-Up
+
+Phew! That was a lot of information. This post will probably serve as
+more of a reference (to me) than anything. It seems like there enough
+detail to sort of understand what's going on, but not nearly enough
+detail to put it all together into a cohesive understanding.
+
+If nothing else it was helpful to organize my own thoughts about the
+different systems in the computer, so there's always that!
