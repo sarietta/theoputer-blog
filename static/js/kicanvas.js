@@ -38569,9 +38569,21 @@ window.customElements.define("kc-kicanvas-shell", KiCanvasShellElement);
 var KiCanvasEmbedElement = class extends KCUIElement {
   constructor() {
     super();
+    this.scrolledIntoView = false;
     this.#project = new Project();
     this.custom_resolver = null;
     this.provideContext("project", this.#project);
+    const callback = /* @__PURE__ */ __name((entries, observer2) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !this.scrolledIntoView) {
+          console.log(`Visibility changed: `, this);
+          this.scrolledIntoView = true;
+          this.initialContentCallback();
+        }
+      });
+    }, "callback");
+    const observer = new IntersectionObserver(callback);
+    observer.observe(this);
   }
   static {
     __name(this, "KiCanvasEmbedElement");
@@ -38652,6 +38664,9 @@ var KiCanvasEmbedElement = class extends KCUIElement {
     }
   }
   render() {
+    if (!this.scrolledIntoView) {
+      return html``;
+    }
     if (!this.loaded) {
       return html``;
     }
@@ -38750,6 +38765,9 @@ var KiCanvasEmbedElement = class extends KCUIElement {
         </main>`;
   }
 };
+__decorateClass([
+  attribute({ type: Boolean })
+], KiCanvasEmbedElement.prototype, "scrolledIntoView", 2);
 __decorateClass([
   attribute({ type: String })
 ], KiCanvasEmbedElement.prototype, "src", 2);

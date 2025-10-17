@@ -1,9 +1,11 @@
 import { i, a as i$1, x, _ as __decorate, n, t } from './property-7fb96a80.js';
 
-let _globalCIrcuitJS1;
+const _globalCIrcuitJS1 = {};
 let FalstadCircuit = class FalstadCircuit extends i {
     src = '';
     height = 600;
+    uuid = (100000.0 * Math.random()).toFixed(0);
+    autorun = false;
     static styles = i$1 `
 :host, div, object {
     position: relative;
@@ -88,17 +90,18 @@ background-color: #000;
         }
     }
     setupIframe() {
-        const iframe = this.shadowRoot?.querySelector("#circuitFrame");
+        const iframe = this.shadowRoot?.querySelector(`#circuitFrame-${this.uuid}`);
+        const self = this;
         Object.defineProperty(iframe?.contentWindow, 'CircuitJS1', {
             get: function () {
-                return _globalCIrcuitJS1;
+                return _globalCIrcuitJS1[self.uuid];
             },
             set: function (sim) {
-                if (_globalCIrcuitJS1 !== sim) {
-                    _globalCIrcuitJS1 = sim;
+                if (_globalCIrcuitJS1[self.uuid] !== sim) {
+                    _globalCIrcuitJS1[self.uuid] = sim;
                 }
                 setTimeout(() => {
-                    sim.setSimRunning(false);
+                    sim.setSimRunning(self.autorun);
                 });
             }
         });
@@ -109,7 +112,7 @@ background-color: #000;
         const localOrigin = window.location.origin;
         const localURL = new URL(`${localOrigin}/js/circuitjs/circuitjs.html${params}`);
         return x `
-<iframe id="circuitFrame" src="${localURL}" frameborder="0" style="width:100%;height:${this.height}px" @load="${this.setupIframe}"></iframe>
+<iframe id="circuitFrame-${this.uuid}" src="${localURL}" frameborder="0" style="width:100%;height:${this.height}px" @load="${this.setupIframe}"></iframe>
 <div class="focus-overlay">
   <div class="bg"></div>
   <div class="fg">Click or tap to interact</div>
@@ -123,6 +126,12 @@ __decorate([
 __decorate([
     n()
 ], FalstadCircuit.prototype, "height", void 0);
+__decorate([
+    n()
+], FalstadCircuit.prototype, "uuid", void 0);
+__decorate([
+    n()
+], FalstadCircuit.prototype, "autorun", void 0);
 FalstadCircuit = __decorate([
     t('falstad-circuit')
 ], FalstadCircuit);
