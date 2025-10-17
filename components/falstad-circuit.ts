@@ -1,12 +1,14 @@
 import { html, css, LitElement, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-let _globalCIrcuitJS1: any;
+const _globalCIrcuitJS1: { [key: string]: any } = {};
 
 @customElement('falstad-circuit')
 export class FalstadCircuit extends LitElement {
   @property() src: string = '';
   @property() height: number = 600;
+  @property() uuid = (100000.0 * Math.random()).toFixed(0);
+  @property() autorun: boolean = false;
 
   static styles = css`
 :host, div, object {
@@ -94,19 +96,21 @@ background-color: #000;
   }
 
   setupIframe() {
-    const iframe = this.shadowRoot?.querySelector("#circuitFrame") as HTMLIFrameElement | null;
+    const iframe = this.shadowRoot?.querySelector(`#circuitFrame-${this.uuid}`) as HTMLIFrameElement | null;
+
+    const self = this;
     Object.defineProperty(iframe?.contentWindow, 'CircuitJS1', {
       get: function() {
-        return _globalCIrcuitJS1;
+        return _globalCIrcuitJS1[self.uuid];
       },
 
       set: function(sim) {
-        if (_globalCIrcuitJS1 !== sim) {
-          _globalCIrcuitJS1 = sim;
+        if (_globalCIrcuitJS1[self.uuid] !== sim) {
+          _globalCIrcuitJS1[self.uuid] = sim;
         }
 
         setTimeout(() => {
-          sim.setSimRunning(false);
+          sim.setSimRunning(self.autorun);
         });
       }
     });
@@ -119,7 +123,7 @@ background-color: #000;
     const localURL = new URL(`${localOrigin}/js/circuitjs/circuitjs.html${params}`);
 
     return html`
-<iframe id="circuitFrame" src="${localURL}" frameborder="0" style="width:100%;height:${this.height}px" @load="${this.setupIframe}"></iframe>
+<iframe id="circuitFrame-${this.uuid}" src="${localURL}" frameborder="0" style="width:100%;height:${this.height}px" @load="${this.setupIframe}"></iframe>
 <div class="focus-overlay">
   <div class="bg"></div>
   <div class="fg">Click or tap to interact</div>

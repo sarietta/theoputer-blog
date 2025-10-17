@@ -25,10 +25,10 @@ such a device so that I could learn by doing.
 Currently there are four printed circuit boards that combine to make
 the full Theoputer (named after my son Theo):
 
-- Daughter Board
-- Clock
-- Arithmetic Logic Unit
-- Instructions and Control
+- [Daughter Board]({{< iref "daughter-board.md" >}})
+- [Clock]({{< iref "clock.md" >}})
+- [Arithmetic Logic Unit]({{< iref "alu.md" >}})
+- [Instructions and Control]({{< iref "instruction-and-control.md" >}})
 
 Here is all of that assembled:
 
@@ -74,7 +74,7 @@ By way of example, the row in [ISA 5.1]() for ==LAI 0x10== (Load A w/
 immediate) says the opcode is:
 
 $$
-0	1	1	0	0	0	0	0	(\textrm{I}_{08})	(\textrm{I}_{07})	(\textrm{I}_{06})	(\textrm{I}_{05})	(\textrm{I}_{04})	(\textrm{I}_{03})	(\textrm{I}_{02})	(\textrm{I}_{01})	
+0	1	1	0	0	0	0	0	(\textrm{I}_{08})	(\textrm{I}_{07})	(\textrm{I}_{06})	(\textrm{I}_{05})	(\textrm{I}_{04})	(\textrm{I}_{03})	(\textrm{I}_{02})	(\textrm{I}_{01})
 $$
 
 That's 16bits long, with the last 8bits indicating that the opcode
@@ -113,8 +113,8 @@ One of the more common actions is to change the value inside a
 register. Have a look at the interface to one of the registers in the
 schematic for the daughter board:
 
-<svg-viewer 
-    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg" 
+<svg-viewer
+    src="/img/daughter-board/Daughter Assembly.V8-20250912.svg"
     viewBoxX="16.833155787329513" viewBoxY="100.86035179134636" viewBoxWidth="100.92597784334659" viewBoxHeight="71.33054566129616">
 </svg-viewer>
 
