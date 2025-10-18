@@ -4,6 +4,8 @@ theme: hugo-theme-stack
 title: Theoputer
 copyright: Sean Arietta
 
+titleCaseStyle: go
+
 menus:
   main:
   - name: Home
@@ -55,6 +57,7 @@ params:
       homepage:
         - type: search
         - type: categories
+        - type: tag-cloud
       page:
         - type: toc
     comments:

@@ -1,7 +1,11 @@
 +++
 title = 'RAM'
+description = "Is it just a bank of registers, or something more?! Well it's always more complicated than yes/no. The real challenge is handling *which* part of memory to operate on."
 date = 2025-10-11T00:09:58-07:00
-draft = true
+draft = false
+image = '/img/ram/header.png'
+categories = ['Sub Systems', 'Computer Engineering']
+tags = ['RAM']
 +++
 
 ## Introduction

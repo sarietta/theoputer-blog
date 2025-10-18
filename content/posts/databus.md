@@ -4,6 +4,7 @@ description = 'The databus is like the central nervous system of the computer. E
 date = 2025-10-07T15:50:01-07:00
 draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Electrical Engineering']
+tags = ['Databus']
 +++
 
 ## Introduction

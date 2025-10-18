@@ -4,6 +4,7 @@ description = "Everyone makes mistakes and I make a lot of them. The initial app
 date = 2024-10-11T20:05:01-07:00
 draft = false
 categories = ['Debugging', 'Electrical Engineering', 'Computer Engineering']
+tags = ['Interrupts']
 +++
 
 ## Introduction

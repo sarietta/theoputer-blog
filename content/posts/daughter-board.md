@@ -7,7 +7,7 @@ math = true
 weight = 43
 image = 'img/daughter-board/header.png'
 categories = ['Sub Systems']
-tags = []
+tags = ['Daughter Board']
 +++
 
 ## Introduction

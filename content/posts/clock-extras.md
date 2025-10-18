@@ -5,6 +5,7 @@ date = 2025-09-21T14:17:11-07:00
 draft = false
 math = true
 categories = ['Sub Systems', 'Computer Engineering']
+tags = ['Clock']
 +++
 
 ## Introduction

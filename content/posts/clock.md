@@ -6,6 +6,7 @@ draft = false
 math = true
 categories = ['Sub Systems', 'Electrical Engineering']
 image = 'img/clock/header.png'
+tags = ['Clock']
 +++
 
 ## Introduction

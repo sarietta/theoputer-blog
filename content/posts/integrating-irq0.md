@@ -4,6 +4,7 @@ description = "Simply stop doing what you're doing. Save all your work very quic
 date = 2024-10-07T09:16:28-07:00
 draft = false
 categories = ['Sub Systems', 'Computer Engineering']
+tags = ['Interrupts']
 +++
 
 > For now, this post will live without a lot of context. I am in the

@@ -1,8 +1,9 @@
 +++
 title = 'Registers'
 date = 2024-12-30T11:32:11-08:00
-draft = true
+draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Debugging']
+tags = ['Registers']
 +++
 
 ## Introduction

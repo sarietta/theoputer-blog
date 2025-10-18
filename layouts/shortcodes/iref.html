@@ -1,4 +1,4 @@
-{{ $page := .Site.GetPage (.Get 0) }}
+{{ $page := .Site.GetPage (.Get 0 | printf "posts/%s") }}
 {{ $pageParts := split (.Get 0) "#" }}
 {{ $anchor := index $pageParts 1 }}
 
