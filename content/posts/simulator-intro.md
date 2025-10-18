@@ -59,7 +59,7 @@ download and upload that csv.
 Once that is uploaded, you should be able to compile programs that you
 write in the code editor. This code editor has two modes:
 
-1. Cish
+1. [Cish]({{< iref "cish.md" >}})
 1. Theoputer Assembly
 
 Cish is fairly C-like although some things are missing. It's

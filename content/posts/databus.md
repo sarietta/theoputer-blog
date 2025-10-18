@@ -1,6 +1,6 @@
 +++
 title = 'Databus'
-description = 'The databus is like the central nercous system of the computer. Every interaction between the systems in the Theoputer use the same 16 signals, but how do we do that safely is the real question.'
+description = 'The databus is like the central nervous system of the computer. Every interaction between the systems in the Theoputer use the same 16 signals, but how do we do that safely is the real question.'
 date = 2025-10-07T15:50:01-07:00
 draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Electrical Engineering']

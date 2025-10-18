@@ -1,6 +1,13 @@
-{{$page := .Site.GetPage (.Get 0) }}
+{{ $page := .Site.GetPage (.Get 0) }}
+{{ $pageParts := split (.Get 0) "#" }}
+{{ $anchor := index $pageParts 1 }}
+
 {{ if and $page (not $page.Draft) }}
+{{ if $anchor }}
+{{ $page.Path }}#{{$anchor}}
+{{ else }}
 {{ $page.Path }}
+{{ end }}
 {{ else }}
 #missing
 {{ end }}
