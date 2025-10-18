@@ -26,7 +26,7 @@ But RAM is almost always volatile. In theory in the modern world you
 *could* use non-volatile chips like a FRAM to store data without
 power, but that would be cost-prohibitive. It's far more appropriate
 to let the hard drives do their job (storing data that needs to be
-outlive the power cycle) and let the RAM do its job (store data while
+outlast the power cycle) and let the RAM do its job (store data while
 the computer is running).
 
 The Theoputer's RAM is akin to normal RAM, but in complete truth the
@@ -56,7 +56,7 @@ handoff between [executing instructions from ROM]({{< iref
 "overview.md#fetch-and-decode" >}}) (the default) to executing them
 from RAM. There is a dedicated post to that upgrade as well,
 describing how the Theoputer [executes RAM instructions]({{< iref
-"ram-instructions.md" >}}).
+"ram-execution.md" >}}).
 
 Ignoring for now the gates at that JK flip-flop, let's look
 specifically at the four control signals (~~^MA^~~, ~~^MI^~~,
@@ -81,7 +81,7 @@ connecting to the databus (~~DBUS{0-15}~~) just like most of the other
 systems in the computer. Something different about this system,
 however, is that we are not really accessing a single data source but
 rather a very large bank of them. In particular, you can think of RAM
-in the Theoputer as just array of registers albeit much slower.
+in the Theoputer as just an array of registers albeit much slower.
 
 Because we effectively have a bank of registers we can read/write
 from/to, we need a way to address them. We need to know *which*
@@ -95,12 +95,11 @@ But this introduces a subtle problem. We cannot simultaneously use the
 databus lines to hold the memory address and at the same time hold the
 contents of the read/write memory operation. Thus we need an
 intermediate storage place to hold the memory address first and *then*
-read/write the contents of memory at that address to/from the data
-bus.
+read/write the contents of memory at that address to/from the databus.
 
 In short we need a register to hold the memory address during a memory
 operation. In the Theoputer, since the beginning, memory addresses are
-16bit long and thus we need a 16bit (or two 8bit registers) that can
+16-bit long and thus we need a 16-bit (or two 8-bit registers) that can
 be enabled and disabled (~~^MA^~~) independently of the memory
 read/write operation signals (~~^MO^~~ and ~~^MI^~~).
 
@@ -115,7 +114,7 @@ MI, BO
 PS
 ```
 
-> Note: These microcode instructions are not real in the sense there
+> Note: These microcode instructions are not real in the sense that there
   is no actual assembly language that understands them. They are just
   demonstrative.
 
@@ -147,7 +146,7 @@ operation. Let's look at the actual schematic of the RAM system:
 
 You can see (maybe if you zoom in) that this setup looks a lot like
 the [register interface]({{< iref "register.md" >}}) except we are
-dealing with 16bit values instead of 8bit values. However, there are
+dealing with 16-bit values instead of 8-bit values. However, there are
 some key differences we should discuss.
 
 ### Memory Address Interface
@@ -160,10 +159,10 @@ memory address:
     src="/img/daughter-board/Daughter Assembly.V8-20250912-RAM.svg">
 </svg-viewer>
 
-There are two (8bit x 2) buffers that control whether the ~~DBUS~~
-signals will be connected to the 16bit address register. Notice that
+There are two (8-bit x 2) buffers that control whether the ~~DBUS~~
+signals will be connected to the 16-bit address register. Notice that
 this register is abstracted in the schematic, but it is effectively
-just a doubled version of the [8bit registers]({{< iref "register.md"
+just a doubled version of the [8-bit registers]({{< iref "register.md"
 >}}) in the computer. The memory address buffers are activated by the
 ~~^MA^~~ signal, which also enables the memory address *register* to
 take input from its data lines:
@@ -206,7 +205,7 @@ address ~~^MEM_OP^~~ signal:
 | L                     | H                    | L         |
 | L                     | L                    | L         |
 
-Long story short, We see that the address register output is only
+Long story short, we see that the address register output is only
 active when one of the memory operation signals is active.
 
 The active ~~^MEM_OP^~~ signal will cause the lines connected to the
@@ -223,7 +222,7 @@ operation on the data lines:
 The ~~D{0-15}~~ pins on the RAM chip are the data pins and are
 connected through two buffers to the Theoputer databus ~~DBUS{0-15}~~
 pins. These buffers are fairly unique. Most of the buffers on the
-Theoputer are one-way but the ones connected here are actual
+Theoputer are one-way but the ones connected here are actually
 bi-directional. That means we can use just two, rather than four, of
 them to control the data bits in both input and output operations. If
 you look closely, you'll see the chips here are SN74HCT245PWR's
@@ -246,7 +245,7 @@ the two sides of the buffer rather than leaving them effectively
 disconnected altogether.
 
 The memory input operation works almost identically except the
-bi-direction buffer direction is flipped causing the databus signals
+bi-directional buffer direction is flipped causing the databus signals
 to flow *into* the memory data pins.
 
 ## RAM, What is Good For?
@@ -262,7 +261,7 @@ addresses in your head while you program is going to be challenging.
 
 But, the utility of having a large bank of memory becomes painfully
 apparent when writing in a higher-level language, like [Cish]({{< iref
-"cish.md" >}}). Maybe more accurately is that it becomes *very*
+"cish.md" >}}). More accurately, it becomes *very*
 apparent when writing a [C-like compiler]({{< iref
 "c-compiler-intro.md" >}}). That's because the RAM starts to become a
 more integral part of the computer itself once there is the notion of
@@ -271,7 +270,7 @@ keep track of the complexities of a stack and thus the concept of a
 stack becomes less useful.
 
 The other valuable thing RAM provides is a fast, modifiable-at-runtime
-place to execute instructions from. Well, that's would be true if the
+place to execute instructions from. Well, that would be true if the
 Theoputer could execute instructions from RAM. That turns out to be
 much harder than it may seem and has its own entire post about how the
 Theoputer evolved to be able to [execute RAM instructions]({{< iref
