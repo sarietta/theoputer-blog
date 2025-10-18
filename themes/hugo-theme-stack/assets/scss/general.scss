@@ -9,6 +9,7 @@ a {
     &.link {
         box-shadow: 0px -2px 0px rgba(var(--link-background-color), var(--link-background-opacity)) inset;
         transition: all 0.3s ease;
+        color: #39baff;
 
         &:hover {
             box-shadow: 0px calc(-1rem * var(--article-line-height)) 0px rgba(var(--link-background-color), var(--link-background-opacity-hover)) inset;

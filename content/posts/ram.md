@@ -1,18 +1,18 @@
 +++
-title = 'Ram'
+title = 'RAM'
 date = 2025-10-11T00:09:58-07:00
 draft = true
 +++
 
 ## Introduction
 
-Even the randomnest of memories is useful, some say. Hopefully that's
+Even the most random memories are useful, some say. Hopefully that's
 the case in the Theoputer's Random Access Memory (RAM) as well.
 
 RAM is often differentiated from other places data is stored along two
 dimensions:
 
-1. It's faster and smaller than long-term, non-volatile storage (e.g. harddisks)
+1. It's faster and smaller than long-term, non-volatile storage (e.g. hard drives)
 1. It's slower and larger than registers
 
 To say that RAM is volatile is to say that it requires constant power
@@ -25,7 +25,7 @@ powerless, for a long time in semiconductors.
 But RAM is almost always volatile. In theory in the modern world you
 *could* use non-volatile chips like a FRAM to store data without
 power, but that would be cost-prohibitive. It's far more appropriate
-to let the harddrives do their job (storing data that needs to be
+to let the hard drives do their job (storing data that needs to be
 outlive the power cycle) and let the RAM do its job (store data while
 the computer is running).
 
@@ -102,7 +102,7 @@ In short we need a register to hold the memory address during a memory
 operation. In the Theoputer, since the beginning, memory addresses are
 16bit long and thus we need a 16bit (or two 8bit registers) that can
 be enabled and disabled (~~^MA^~~) independently of the memory
-read/write operation signals (~~^MO^~~ and ~~^MI^~~). 
+read/write operation signals (~~^MO^~~ and ~~^MI^~~).
 
 To help make this a bit more concrete, let's look at the
 [microcode instructions]({{< iref "instruction-microcoder.md" >}}) for
@@ -134,8 +134,11 @@ causing [bus contention]({{< iref "databus.md#contentious-behavior"
 should come from A or B nor whether the data to be stored in memory
 should come from A or B. Lots of problems!
 
-But the solution is simple enough as described and leads to a slightly
-more complex circuit:
+## A Tour of the Circuit
+
+As we know now, we need a dedicated memory address register to hold
+the address we want to operate on while we're performing the
+operation. Let's look at the actual schematic of the RAM system:
 
 <svg-viewer
     viewBoxX="32.508034589442076" viewBoxY="57.008135768913036" viewBoxWidth="327.9763320031253" viewBoxHeight="231.98795096526058"
@@ -144,33 +147,132 @@ more complex circuit:
 
 You can see (maybe if you zoom in) that this setup looks a lot like
 the [register interface]({{< iref "register.md" >}}) except we are
-dealing with 16bit values instead of 8bit values. There are two
-buffers coming from the databus into RAM
+dealing with 16bit values instead of 8bit values. However, there are
+some key differences we should discuss.
+
+### Memory Address Interface
+
+The right side of the schematic above is the portion that handles the
+memory address:
+
+<svg-viewer
+    viewBoxX="9.471476050917044" viewBoxY="89.90294546776816" viewBoxWidth="193.55736181656914" viewBoxHeight="136.9091955136554"
+    src="/img/daughter-board/Daughter Assembly.V8-20250912-RAM.svg">
+</svg-viewer>
+
+There are two (8bit x 2) buffers that control whether the ~~DBUS~~
+signals will be connected to the 16bit address register. Notice that
+this register is abstracted in the schematic, but it is effectively
+just a doubled version of the [8bit registers]({{< iref "register.md"
+>}}) in the computer. The memory address buffers are activated by the
+~~^MA^~~ signal, which also enables the memory address *register* to
+take input from its data lines:
+
+<svg-viewer
+    viewBoxX="-52.38172651744155" viewBoxY="250.80229032527308" viewBoxWidth="566.9151493846765" viewBoxHeight="400.9968739929152"
+    src="/img/ram/ram-schematic-address-highlight.svg">
+</svg-viewer>
+
+This address will be clocked in on the standard ~~↑CLK~~ transition,
+adhering to the [execution phase scheme]({{< iref
+"overview.md#fetch-and-decode" >}}) used in the Theoputer.
+
+### Memory Data Interface
+
+With the memory address register data latched we can now perform the
+actual memory operation. In the memory operations the ~~^MA^~~ signal
+will be inactive (i.e. high) and either the ~~^MO^~~ or ~~^MI^~~
+signal will be active depending on whether the memory operation is an
+output or input respectively.
+
+Let's consider an output operation, first looking at the address
+register:
+
+<svg-viewer
+    viewBoxX="109.87903712852152" viewBoxY="242.8222527689142" viewBoxWidth="566.9151493846765" viewBoxHeight="400.9968739929152"
+    src="/img/ram/ram-schematic-output-highlight.svg">
+</svg-viewer>
+
+Ahh the fruits of our analysis. Here in the memory operation we are
+using the memory address register! The logic gates can get a little
+odd in these cases because we are dealing with active low signals, so
+let's look at the AND gate's truth table that controls the memory
+address ~~^MEM_OP^~~ signal:
+
+| ~~^MO^~~ (Memory Output) | ~~^MI^~~ (Memory Input) | ~~^MEM_OP^~~ |
+|-----------------------|----------------------|-----------|
+| H                     | H                    | H         |
+| H                     | L                    | L         |
+| L                     | H                    | L         |
+| L                     | L                    | L         |
+
+Long story short, We see that the address register output is only
+active when one of the memory operation signals is active.
+
+The active ~~^MEM_OP^~~ signal will cause the lines connected to the
+RAM chip's address inputs to contain the address we want to operate
+on! At this point we've got a good stable address on the RAM chip, so
+let's look at the right side of the circuit to see the result of the
+operation on the data lines:
+
+<svg-viewer
+    viewBoxX="467.6507209052759" viewBoxY="267.4273685676873" viewBoxWidth="566.9151493846765" viewBoxHeight="400.9968739929152"
+    src="/img/ram/ram-schematic-output-highlight.svg">
+</svg-viewer>
+
+The ~~D{0-15}~~ pins on the RAM chip are the data pins and are
+connected through two buffers to the Theoputer databus ~~DBUS{0-15}~~
+pins. These buffers are fairly unique. Most of the buffers on the
+Theoputer are one-way but the ones connected here are actual
+bi-directional. That means we can use just two, rather than four, of
+them to control the data bits in both input and output operations. If
+you look closely, you'll see the chips here are SN74HCT245PWR's
+instead of the ubiquitous SN74HCT541PWR.
+
+> Note: These should probably be HC-type buffers rather than HCT-type
+  buffers. The T indicates these are TTL-level compatible, but at this
+  point in the Theoputer's existence that interoperability is moot.
+
+The ~~^MI^~~ line connected to these bi-directional buffers is
+highlighted, but not because it's "active". The buffers can work in
+either direction and this signal dictates which direction they will
+buffer to/from. In this case, ~~^MI^~~ is inactive (high) and that
+will cause these SN74HCT245PWR's to connect the ~~D{0-15}~~ pins
+**to** the ~~DBUS{0-15}~~ pins, and in *that* direction.
+
+Finally, the ~~^MEM_OP^~~ signal also appears here and is connected to
+the enable pin of the bi-directional buffers so they actually connect
+the two sides of the buffer rather than leaving them effectively
+disconnected altogether.
+
+The memory input operation works almost identically except the
+bi-direction buffer direction is flipped causing the databus signals
+to flow *into* the memory data pins.
 
 ## RAM, What is Good For?
 
-Now that we can address RAM, we need to understand how and why it's
-important. As noted, you can think of RAM as just a large bank of
-registers. That means it's particular useful to store values you might
-need during the course of executing a program.
-
-But it may not be immediately clear what kinds of intermediate values
-would be helpful to store. Especially given there's already a few
-registers lying around. Your mind may jump to things like arrays of
-data and that's a good intuition. RAM is an array of registers so it
-stands to reason that it would be useful for storing arrays of data.
-
-Well really any data during the lifetime of a program is helpful to
-store potentially. You could think of all of the variables in a
-program as just part of some large variable array. This isn't far off
-from what the bulk of the RAM is intended to be used for in a program.
+The general concept of having a bunch of storage isn't a wild idea,
+but it may seem like a lot of extra bits (pun intended) if it's just
+going to sit around empty most of the time.
 
 It's hard to appreciate when just writing assembly how useful RAM can
-be. It becomes painfully apparent when writing in a higher-level
-language, like [Cish]({{< iref "cish.md" >}}). Maybe more accurately
-is that it becomes *very* apparent when writing a
-[C-like compiler]({{< iref "c-compiler-intro.md" >}}). That's because
-the RAM starts to become a more integral part of the computer itself
-once there is the notion of a heap and a stack. If you're only ever
-writing assembly, it's hard to keep track of the complexities of a
-stack and thus the concept of a stack becomes less useful.
+be. Unless you're an assembly wizard (and you almost assuredly are not
+a Theoputer assembly wizard), trying to keep a bunch of memory
+addresses in your head while you program is going to be challenging.
+
+But, the utility of having a large bank of memory becomes painfully
+apparent when writing in a higher-level language, like [Cish]({{< iref
+"cish.md" >}}). Maybe more accurately is that it becomes *very*
+apparent when writing a [C-like compiler]({{< iref
+"c-compiler-intro.md" >}}). That's because the RAM starts to become a
+more integral part of the computer itself once there is the notion of
+a heap and a stack. If you're only ever writing assembly, it's hard to
+keep track of the complexities of a stack and thus the concept of a
+stack becomes less useful.
+
+The other valuable thing RAM provides is a fast, modifiable-at-runtime
+place to execute instructions from. Well, that's would be true if the
+Theoputer could execute instructions from RAM. That turns out to be
+much harder than it may seem and has its own entire post about how the
+Theoputer evolved to be able to [execute RAM instructions]({{< iref
+"ram-execution.md" >}})
