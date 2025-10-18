@@ -5,6 +5,7 @@ date = 2025-09-29T22:15:01-07:00
 draft = false
 math = true
 categories = ['Computer Science']
+image = '/img/simulator/header.gif'
 +++
 
 ## Introduction

@@ -19,7 +19,11 @@
 let infScroll = new InfiniteScroll(document.querySelector(".article-list"), {
      path: 'a.page-link',
      append: 'article',
-});
+ });
+
+ if (infScroll && infScroll.canLoad === true) {
+     document.querySelector(".pagination").style.display = 'none';
+ }
 </script>
 
 {{ end }}
