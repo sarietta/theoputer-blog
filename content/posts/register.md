@@ -1,5 +1,6 @@
 +++
 title = 'Registers'
+description = "We need a place to store temporary data that's fast and easy to access. Throw on your flip-flops, latch down your data, and register for some fun in the run."
 date = 2024-12-30T11:32:11-08:00
 draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Debugging']
