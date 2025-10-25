@@ -2047,8 +2047,10 @@ var KCUIFocusOverlay = class extends KCUIElement {
   }
   #intersection_observer;
   initialContentCallback() {
-    this.addEventListener("click", () => {
-      this.classList.add("has-focus");
+    this.addEventListener("click", (e) => {
+      if (e) {
+        this.classList.add("has-focus");
+      }
     });
     this.addDisposable(
       listen(document, "click", (e) => {
@@ -38625,10 +38627,12 @@ var KiCanvasEmbedElement = class extends KCUIElement {
   #schematic_app;
   #board_app;
   initialContentCallback() {
-    this.#setup_events();
-    later(() => {
-      this.#load_src();
-    });
+    if (this.scrolledIntoView) {
+      this.#setup_events();
+      later(() => {
+        this.#load_src();
+      });
+    }
   }
   async #setup_events() {
   }
@@ -38664,9 +38668,6 @@ var KiCanvasEmbedElement = class extends KCUIElement {
     }
   }
   render() {
-    if (!this.scrolledIntoView) {
-      return html``;
-    }
     if (!this.loaded) {
       return html``;
     }

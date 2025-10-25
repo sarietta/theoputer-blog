@@ -140,14 +140,15 @@ about how it would operate in the real world:
   and you can see my amatuerish skills on full display here.
 
 It may look perfectly fine. Indeed this is the schematic that produced
-the assembled board at the beginning of the post. The problem is the
-~~CLK~~ signal. The unsuspecting reader may not think about the real
-world pulsing clock and instead think of the nice vacuum version: a
-button that a person is pressing to test out the register. But that
-pulsing clock is real. And in the design above *every pulse will
-attempt to set the register*.
+the assembled board at the beginning of the post and executed
+[the first operation]({{< iref "the-first-operation.md" >}}) in the
+Theoputer. The problem is the ~~CLK~~ signal. The unsuspecting reader
+may not think about the real world pulsing clock and instead think of
+the nice vacuum version: a button that a person is pressing to test
+out the register. But that pulsing clock is real. And in the design
+above *every pulse will attempt to set the register*.
 
-Imagine a case where instructions that are executed are simply:
+Imagine a case where the instructions executed are simply:
 
 ```nasm
 LAI 0x10
