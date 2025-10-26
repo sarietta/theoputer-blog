@@ -173,7 +173,7 @@ not-great attempt to model this:
 Again the problem is that we only want to latch data into the register
 when the clock goes from low to high AND the register is enabled. The
 original design completely missed that point. Not only that, if we
-were to use the scheme of having an emable signal and a single
+were to use the scheme of having an enable signal and a single
 read/write signal, we would have to perform some complex logic to see
 if the register was enabled AND the the clock transitioned AND the
 operation was a write. So maybe the enable and read/write pair are not

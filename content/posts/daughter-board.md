@@ -611,7 +611,7 @@ The gates and the JK flip-flop are there to help coordinate the
 handoff between executing instructions from ROM (the default) to
 executing them from RAM. There is a dedicated post to that upgrade as
 well, describing how the Theoputer [executes RAM instructions]({{<
-iref "ram-instructions.md" >}}).
+iref "ram-execution.md" >}}).
 
 For now the important things to note are that there are a set of
 control lines that determine whether RAM should output its contents to
@@ -632,7 +632,7 @@ dedicated stack pointer and they worked just fine. Well fine enough.
 But without a dedicated stack pointer, you would inevitably discover
 why dedicated stack pointers are *incredibly* useful. There are, of
 course, more details in the post about the Theoputer
-[Stack Pointer]({{< iref "stack-pointer.ms" >}}), so you'll have to
+[Stack Pointer]({{< iref "stack-pointer.md" >}}), so you'll have to
 convince yourself or read that post to understand why the Theoputer
 dedicates a fairly sizeable portion of the board to it:
 
