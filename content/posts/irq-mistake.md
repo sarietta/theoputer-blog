@@ -11,7 +11,7 @@ tags = ['Interrupts']
 
 When we covered [Integrating IRQ0]({{<iref "integrating-irq0">}}) it
 may have been obvious that there were a lot of synchronization issues
-to deal with. I certainly underestimated how challening that would
+to deal with. I certainly underestimated how challenging that would
 be. Going through one of the more subtle issues inspired the post
 [Modeling Reality is Hard]({{<iref "modeling-reality-is-hard" >}}).
 
@@ -45,7 +45,7 @@ if both ~~^S^~~ and ~~^R^~~ are active at the same time, the state of
 the latch is considered unstable. Well, that's what any Internet
 search would have you believe at least. Let's evaluate the state of
 the SR latch from above when both inputs are LO (active in this
-case). Supposedly this is an unstable configuation:
+case). Supposedly this is an unstable configuration:
 
 ![SR Latch Unstable](img/irq-mistake/2x/sr-latch-unstable@2x.png)
 {class="center padded-white"}
@@ -70,7 +70,7 @@ transition* to `S=R=1` is an unstable *transition*.
 
 In practice this means we have to be very careful when using SR
 latches to avoid the two cases above. We can certainly use `S=R=0`,
-but we should air on the side of avoiding it and if we are forced to
+but we should err on the side of avoiding it and if we are forced to
 use it great care must be taken to use it correctly.
 
 ## Timing Diagram for SR Latch
@@ -191,7 +191,7 @@ step-like operation. If you're questioning why we need that, reread
 "integrating-irq0#whats-the-next-instruction" >}}).
 
 Importantly, while there is only one time that the output of the
-~~IRQ0~~ JK Flip Flop goes from LO to HI, the top partof the schematic
+~~IRQ0~~ JK Flip Flop goes from LO to HI, the top part of the schematic
 actually oscillates in time with the ~~CLK~~ signal, assuming we are
 executing a sequence of ==JMP==-like instructions. It so happens that
 our interrupt request handling logic does in fact execute a sequence

@@ -17,7 +17,7 @@ far along my journey building it. That means that:
 1. I lost some context/information/etc. along the way
 
 The first point is fine. The last point makes me sad. That last point
-is why I am forcing myself to do this laborious taks of writing down a
+is why I am forcing myself to do this laborious task of writing down a
 bunch of stuff I already went through. Well it's that and for a kind
 of posterity that I hope to leave to the future little kids who are
 told they can't do something because it's too hard. But I digress.
@@ -96,5 +96,5 @@ That said, this was the very first operation ever performed in the
 Theoputer, and it worked! From an engineering standpoint, the
 important part is that it *was* so barebones. That's good engineering
 put into practice. Small, fairly isolated tests that can be used to
-gain insihgts on how to build the *next* version smarter, better,
+gain insights on how to build the *next* version smarter, better,
 faster.

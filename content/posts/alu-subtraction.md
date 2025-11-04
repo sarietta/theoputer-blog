@@ -31,7 +31,7 @@ cutting to the chase sort of belies the whole point of this blog.
 
 ## Who's Compliment?
 
-Abandon what you know about two's compliment numbers. Let's do this
+Abandon what you know about two's complement numbers. Let's do this
 from very basic arithmetic principles. Let's start by considering
 *negative* numbers in our familiar decimal system. After all,
 subtraction is really just addition if you have negative numbers
@@ -39,7 +39,7 @@ around. And you can't "get" to the negative numbers from the positive
 numbers unless subtraction is allowed, so the concept of negative
 numbers and subtraction are clearly linked.
 
-In every day decimal, we kind of cheat when it comes to negative
+In everyday decimal, we kind of cheat when it comes to negative
 numbers. We just stick a '-' symbol in front of a number to "make it
 negative". And that's convenient because we use the same symbol to
 indicate the operation of subtraction. In binary, and especially in a
@@ -49,7 +49,7 @@ subtraction. In theory we could look for this symbol, or hold on to it
 alongside the 8bit numbers, and change the process to be one of
 subtraction. But that would require adding another bit anyway. A kind
 of yes/no flag that the ALU would have to look at to take path
-'subtraction' versus path 'addition.
+'subtraction' versus path 'addition'.
 
 A naive approach would be to just tack on the negative/non-negative
 bit at the highest order location. Since we don't want to redesign our
@@ -297,7 +297,7 @@ let's unpack it.
 If we have a carry coming from the \(2^2\) base, that means the
 intention is to "add \(2^3\) to the \(2^3\) digits". That's what we do
 in addition and what we all learned in grade school. Recall that the
-digits in this most-signifcant bit (MSB) represent \(-2^3\). The adder
+digits in this most-significant bit (MSB) represent \(-2^3\). The adder
 doesn't *know* that, so it will plod along without taking that into
 account. That means the carry coming out of the \(-2^3\) base is not
 the same as the addition case -- that was a carry coming out of a
@@ -365,7 +365,7 @@ signed operations or overflowed during unsigned operations.
 Ok that's the second time I've intentionally misspelled that
 word. Enough is enough. We aren't quite done yet. we've covered how to
 perform subtraction via two's complement numbers, but we haven't
-derived a way to take a postive number and turn it into it's negative
+derived a way to take a positive number and turn it into its negative
 sister. So let's do that! No one can stop us now. Consider a positive
 number:
 
@@ -488,4 +488,4 @@ that is how the Theoputer ALU handles subtraction:
 
 The ~~SUB~~ signal is highlighted and activates the XOR gate on the
 individual ~~Ai~~ bits, while also feeding into the first Full Adder's
-~~Cin~~ signal. Woohoot!
+~~Cin~~ signal. Woohoo!

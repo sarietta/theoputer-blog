@@ -20,7 +20,7 @@ that's an hour long.
 
 In simple terms the reason I moved to four layers for the clock board,
 and would prefer to move to four layers for all boards were it not so
-expensive, is that four layer boards provide a much better way to
+expensive, is that four-layer boards provide a much better way to
 reduce ground noise. Ground noise sounds innocuous, but it can be so
 strong that gates can flip and timings can be affected. So in this
 post I am diving deep into all of the considerations around ground
@@ -124,7 +124,7 @@ In addition, and this is very subtle, adding stitching vias to the
 ground plane if the IC GND pin is not directly connected to the ground
 plance, is also very helpful. The vias will add some inductance, but
 the ground plane is effectively already sitting at 0V given it has
-almost no indutance in it, and that means the "faster" the current can
+almost no inductance in it, and that means the "faster" the current can
 get to the ground plane the lower the overall inductance of the return
 path will be. Moreover, inductors in parallel exhibit *less*
 inductance than their individual sums:
@@ -216,7 +216,7 @@ $$
 
 We talked about how having a low \(L\) is important to mitigating
 ground bounce and mitigating radiative EM signals from ground
-loops. But the astute read may wonder why not just try to reduce the
+loops. But the astute reader may wonder why not just try to reduce the
 \(\frac{di}{dt}\) term also? Well yes. That's a good idea. However,
 there's a cost with this side of the equation. Fundamentally we do
 have and want fast switching signals.

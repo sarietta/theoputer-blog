@@ -30,7 +30,7 @@ simulator for the Theoputer.
 
 ## Use Cases
 
-The [simulator](/simulator) is a very good tool if you're aim is to
+The [simulator](/simulator) is a very good tool if your aim is to
 debug programs for the Theoputer. It's not great for helping with the
 actual engineering of the computer itself. There's one exception: when
 there's a bug in Theoputer, stepping through the execution on the real
@@ -54,7 +54,7 @@ friendly operation.
 
 First, you will need to load an ISA. At the time of writing, you will
 want to use [ISA 5.1](/isa/ISA-V5.1.csv). At some point I may make it
-easier to load form a list of ISAs, but for now you'll have to
+easier to load from a list of ISAs, but for now you'll have to
 download and upload that csv.
 
 Once that is uploaded, you should be able to compile programs that you

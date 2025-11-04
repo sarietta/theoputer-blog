@@ -38,7 +38,7 @@ Here is all of that assembled:
 
 Like most computers the Theoputer is driven by a clock circuit that
 produces a square wave output. This clock signal (~~CLK~~) and its
-inverse (~~^CLK^~~) are used to define the two halves of a the (fetch
+inverse (~~^CLK^~~) are used to define the two halves of the (fetch
 and decode) + execute cycle:
 
 ![Realistic clock cycle](img/clock/4x/realistic-clock-cycle@4x.png)
@@ -55,7 +55,7 @@ instruction register. This is, effectively, the fetch operation.
 Before we discuss the decode operation, it's important to know that
 the Theoputer uses **microcode instructions**. A single instruction
 like "load the value \(\textrm{0x10}_{16}\) into register A"
-(i.e. ==LAI 0x010==) is actually comprised of two micro-instructions:
+(i.e. ==LAI 0x10==) is actually comprised of two micro-instructions:
 
 1. Put the value \(\textrm{0x10}_{16}\) on the databus and set
 register A to read mode
@@ -95,7 +95,7 @@ value at \(24576_{10}\) will set the control signals ~~^IO^~~
 value at \(24577_{10}\) will set the control signal ~~PS~~ (program
 counter step).
 
-Every ~~^CLK^~~ pulse advances the microder stepper by one. On program
+Every ~~^CLK^~~ pulse advances the microcoder stepper by one. On program
 counter operations, the microcoder is reset back to zero so the next
 instruction can be latched based on the new program counter value.
 
@@ -104,7 +104,7 @@ instruction can be latched based on the new program counter value.
 After the fetch and decode stage, there will be a set of control lines
 in the Theoputer that are active (notably most of these lines are
 active **low**). On the transition of the ~~CLK~~ (notice this is
-**NOT** the inverted clock this time) from lwo to high, actions
+**NOT** the inverted clock this time) from low to high, actions
 happen. Actions are anything that changes the state of the computer in
 any way. Or, if it's easier, actions are everything that's not a
 control signal changing.
@@ -137,7 +137,7 @@ set and the clock is transitioning from low to high.
 
 ## How Is It Programmed?
 
-A compuer needs something to execute or it doesn't compute. Trees
+A computer needs something to execute or it doesn't compute. Trees
 falling the woods making sounds kind of thing there.
 
 In the Theoputer most programs are created on a normal computer and
@@ -165,6 +165,6 @@ cable with the simulator:
 ## Closing Thoughts
 
 That's a pretty high-level overview of how the Theoputer works. It is,
-despite it's homemadeness, quite complex and doesn't lend itself well
+despite its homemadeness, quite complex and doesn't lend itself well
 to this kind of discussion. But it may be the description that causes
 you to read more. Fingers crossed.

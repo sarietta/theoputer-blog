@@ -9,8 +9,7 @@ image = 'img/transmission-line-reflections/header.png'
 
 ## Introduction
 
-Whoooo boy. This one was a real challenge for me, an amatuer computer
-engineer. As I was working through the issues in the
+Whoooo boy. This one was a real challenge for me, an amateur computer engineer. As I was working through the issues in the
 [IRQ Mistake]({{<iref "irq-mistake" >}}), I realized that the real
 issue was much deeper than I had expected.
 
@@ -24,7 +23,7 @@ reflections".
 ## There Is No Perfect Square Wave
 
 Electricty (both current and potential energy) behaves like a wave
-when a circuit changes the electricty in the circuit. This is a
+when a circuit changes the electricity in the circuit. This is a
 simple-enough statement, but it's hard to appreciate the implications
 this has. Sure, a clock signal is definitely wave-like, but it is
 almost always modeled as a discrete stream of *pulses*. But
@@ -146,16 +145,16 @@ called an *overdamped* oscillator:
 We've established that oscillators don't actually produce clock
 pulses, but rather approximations to clock pulses via a Fourier Series
 approximation. Said differently, and now importantly, oscillators
-produce an infinte sum of waves, specifically a weighted sum of
+produce an infinite sum of waves, specifically a weighted sum of
 harmonics.
 
-One thing most people have experience in their lifes when it comes to
+One thing most people have experience in their lives when it comes to
 waves is that they reflect off any discontinuity in the medium the
 wave is propagating through. Make some waves in the bath and when they
 hit the wall of the tub they will come back to you.
 
 The oscillator is producing waves and thus those waves will reflect if
-they encounter and discontinuity in the medium they are propagating
+they encounter a discontinuity in the medium they are propagating
 through. So the question is whether that happens in a circuit.
 
 First we have to consider what the medium is that the oscillator waves
@@ -170,8 +169,8 @@ are going to stick to the electromagnetic field.
 
 There are several things that can cause discontinuities in the
 electromagnetic field, but the important one (I think) here is a
-discontinuity in impedence. That kind of discontinuity is rampant at
-logic gate inputs because the impedence of those inputs is usually
+discontinuity in impedance. That kind of discontinuity is rampant at
+logic gate inputs because the impedance of those inputs is usually
 _very_ high, especially compared to the impedence of the copper trace.
 
 In effect, whenever the clock pulse from our oscillator encounters a
@@ -194,7 +193,7 @@ in blue.
 
 Something similar happens in a circuit, but not exactly the same. The
 reflection is not perfectly elastic (i.e. some of the energy is lost),
-there is some impedence in the copper traces, and there are other
+there is some impedance in the copper traces, and there are other
 factors I won't pretend to understand. The net result is that for
 "long enough" traces, the wave is reflected back, a standing wave can
 be established (though not guaranteed), and a high frequency ringing
@@ -219,7 +218,7 @@ line indicating that we've (inadvertently) created what's called a
 **transmission line**, or any signal line that is long enough that
 ringing happens at the frequencies on that line.
 
-All of this ringing is due to the osciallator producing waves, the
+All of this ringing is due to the oscillator producing waves, the
 implications of those waves (reflections), and the resulting emergent
 phenomenon. Phew.
 
@@ -227,7 +226,7 @@ phenomenon. Phew.
 
 There are a few ways to handle transmission line ringing, but the
 easiest seems to be to add a resistor at the source of the signal. The
-resistor will add impendence to the system, and if it's chosen
+resistor will add impedance to the system, and if it's chosen
 correctly can filter out the ringing produced in the line. This is
 where it's helpful to switch back to the physics view of the world,
 because in effect we want to create a "Critically Damped
@@ -316,7 +315,7 @@ is expected because we know we'll never perfectly get a square wave or
 even hit the magical critical damping in all cases.
 
 One other minor point to note is that the rise and fall times of a
-critically-damped oscillator will necessarily be slight slower than an
+critically-damped oscillator will necessarily be slightly slower than an
 under-damped one. This is due to the phenomenon described earlier
 about the energy needing to change "direction". The cost for making a
 less-ringing signal is it slows down a bit. More precisely, it takes
@@ -370,5 +369,4 @@ trying to solve a very hard puzzle that definitely has a solution, but
 no one else has the answer to.
 
 Remove assumptions. Simplify. Setup experiments. Use
-intuition. Read. Test. Validate. Repeat until there is only one asnwer
-left.
+intuition. Read. Test. Validate. Repeat until there is only one answer left.

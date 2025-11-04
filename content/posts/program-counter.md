@@ -13,7 +13,7 @@ tags = ['Program Counter']
 I remember, long ago, when I first learned about how computers
 worked. I remember someone, I think it was
 [Jason Mars](https://www.jasonmars.org/) who was a great friend and
-colleague, telling me about how they needed to something interesting
+colleague, telling me about how they needed to do something interesting
 with the "program counter". I was aghast. What do you need a counter
 for in a program? It just didn't seem intuitive that you'd need to
 keep track of an incremented value, nor could it be *that* important.
@@ -139,7 +139,7 @@ counter we need should have the following properties:
 1. Don't care about decrementing
 1. Need to be able to set the counter value to a specific, arbitrary value easily
 
-That last criterion is often referred to as the counter's abolity to
+That last criterion is often referred to as the counter's ability to
 "load" or "preset". Cutting to the chase, the specific chip we use in
 the Theoputer is the
 [74HC161](https://assets.nexperia.com/documents/data-sheet/74HC161.pdf). This

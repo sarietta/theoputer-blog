@@ -13,7 +13,7 @@ connects the various cognitive parts of you (e.g. your brain) to the
 functional parts of you (e.g. your arm) via physical connections
 (nerves) that carry signals (also electrical!).
 
-The Theoputer databus is 16bits wide, meaning it can carry 16 1bit
+The Theoputer databus is 16-bits wide, meaning it can carry 16 1bit
 (low/off/0 or high/on/1) numbers in parallel at once. Originally I had
 thought that 8bits "would be enough", because after all this is an
 8bit computer! But I think the minimum for an Nbit computer is to have
@@ -39,7 +39,7 @@ As a quick example, imagine you wanted to copy the contents of
 dedicated lines connecting A and B easily enough, but what if we
 wanted to instead copy Register X to Register B? Now we have a
 problem. We either need *another* set of lines (eight in this case
-since the registers are 8bit) and we need a way to tell Register B to
+since the registers are 8-bit) and we need a way to tell Register B to
 take the data from the lines coming from Register X and ignore
 anything on the lines coming from Register A. You can see that this
 quickly becomes incredibly complex as you add more things that need to
@@ -158,7 +158,7 @@ since day one.
 
 That means the DIP switches aren't needed anymore. Instead we use the
 fact that everything that outputs to the databus does so through a
-tristate buffer. If nothing is outputing to the databus then the value
+tristate buffer. If nothing is outputting to the databus then the value
 on those lines will be... well what? Inherently it will be noise, but
 we can easily add 16 pull-down resistors to the databus simultaneously
 avoding grounding out the databus lines and providing a nice default
@@ -197,6 +197,6 @@ you can try:
     layers="Edge.Cuts, F.Fab, F.SilkS, Holes, Vias, F.Cu, B.Cu, Pads, F.Silkscreen"
     controls="basic+"></kicanvas-embed>
 
-The gasping may continue if you also read and became an evangalest of
+The gasping may continue if you also read and became an evangelist of
 the [ground noise]({{< iref "ground-noise.md" >}}) post. Again, the
 engineering excuse will save us all in the end.

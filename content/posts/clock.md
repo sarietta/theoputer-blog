@@ -31,7 +31,7 @@ truly understand.
 
 We should start with why this forsaken component is so integral to a
 computer. It's likely you've heard about clock speeds and overclocking
-and all of that. Modern day clocks are similar to the clock in
+and all of that. Modern-day clocks are similar to the clock in
 Theoputer, but the architectures of modern computers is extremely
 complex. That complexity results in less clarity on the connection
 between the clock and the speed of the machine. But in the Theoputer
@@ -44,7 +44,7 @@ CPUs execute instructions one at a time, in a sequential
 fashion. Superscalar CPUs are super. They're more complex and usually
 do fancy pipelining and parallel execution. The Theoputer is a scalar
 CPU, and it will almost certainly stay that way. It is this "scalar"
-property to means the clock speed and the execution speed of the
+property that means the clock speed and the execution speed of the
 Theoputer are tightly bound.
 
 The clock is essentially the thing that moves the Theoputer
@@ -63,7 +63,7 @@ perform (in plain English for now):
 1. Add the two numbers you're remembering together
 1. Remember the result
 
-The clock is going to give us the signal it's ok to proceed to the
+The clock is going to give us the signal that it's ok to proceed to the
 next instruction. Let's look at a traditional clock signal:
 
 ![Square wave clock](img/clock/2x/square-clock@2x.png)
@@ -83,7 +83,7 @@ It's easy to gloss over the operation "get the current instruction" as
 being instaneous and itself not really an operation at all, but in the
 land of computers, *Nothing* (with a capital *N*) is
 instantaneous. Everything must be accounted for because our Theoputer
-is runnig so fast that even things that seem like they happen
+is running so fast that even things that seem like they happen
 instaneously may not make the deadline. So to execute any instruction
 on the list above actually takes two operations:
 
@@ -102,7 +102,7 @@ the Theoputer would be:
 1. Get instruction $3$
 1. Execute instruction $3$, which in this case says: "Remember the result"
 
-The more pedantic we are at this stage the happy we'll be. Turning
+The more pedantic we are at this stage the happier we'll be. Turning
 back to the clock, we could execute each of the list operations above
 on either the maximum or the minimum clock point. That would be
 fine. But we can cheat a little. Each *transition* of the clock (from
@@ -124,7 +124,7 @@ circuit that can produce that beautiful square wave above.
 ### A More Accurate Clock Diagram
 
 The very astute reader may note two things about this. First, we've
-hammered on this notion that nothing happens instanesouly and yet the
+hammered on this notion that nothing happens instantaneously and yet the
 graph above shows an instantaneous jump from the min to the max
 value. Second, the lines indicating when actions are taken seem to be
 in the middle of the waves, but how?
@@ -143,7 +143,7 @@ Theoputer we are moving towards almost all logic chips being the CMOS
 (transistor-transitor logic) variety. The properties of CMOS
 semiconductors are such that a "low" voltage or $0$ signal is usually
 around 0.8V and a high/$1$ voltage is usually very close to the supply
-voltage of the circtuit, which is 5V in our case. Thus, when the clock
+voltage of the circuit, which is 5V in our case. Thus, when the clock
 transitions down to about 1.5V, the chips in the Theoputer (hopefully)
 see that as a transition from high to low, and when the clock
 transitions above about 3.5V the chips will see a transition from low
@@ -186,12 +186,10 @@ turns out a 555 timer is a great option.
 
 ### Controllable Oscillations
 
- The 555 timer is a very cool and somewhat ubiquitous intergrated
-circuit (IC). It's uncommon that ICs go by their name like that, which
-underliens how ubiquitous they are. There are entire courses taught on
+ The 555 timer is a very cool and somewhat ubiquitous integrated circuit (IC). It's uncommon that ICs go by their name like that, which underlines how ubiquitous they are. There are entire courses taught on
 the 555 timer. It's very interesting, but too dense for our purposes.
 
-There are wizards out there Harry. Wizards who understand 555 timers
+There are wizards out there, Harry. Wizards who understand 555 timers
 like the rest of us understand words in a novel. There is one such
 wizard who wrote up a bunch of circuits, and that wizard's website
 went defunct. But some awesome people build this Internet Archive and
@@ -205,7 +203,7 @@ time spent in the high state versus the low state. 50% means there
 should be exactly as much time spent for the clock in its high state
 as it spends in its low state. Here is the image from that website:
 
-![Image of a 555 timer circtuit with a 50% duty cycle](https://web.archive.org/web/20161225222904im_/http://www.sentex.ca/%7Emec1995/gadgets/555/555ex10.gif)
+![Image of a 555 timer circuit with a 50% duty cycle](https://web.archive.org/web/20161225222904im_/http://www.sentex.ca/%7Emec1995/gadgets/555/555ex10.gif)
 {class="center"}
 
 And here is an implementation of that same circuit in the simulator.
@@ -255,7 +253,7 @@ f_{min} &= \frac{1}{1.1 * 10^6 * 10^{-6}} = 0.909
 \end{align*}
 $$
 
-It's worth nothing that the max frequency is only theoretical in this
+It's worth noting that the max frequency is only theoretical in this
 case. The 555 timer can only oscillate so fast due to the switching
 speeds of the internal components, so in practice this just let's us
 hit the max frequency of the specific 555 timer chip we use. In the
@@ -278,7 +276,7 @@ in the previous section, so let's turn our attention to the other one:
 the oscillator.
 
 An oscillator of this form is comprised of a resonator and a feedback
-loop that stabalizes and amplifies the resonator so we can do things
+loop that stabilizes and amplifies the resonator so we can do things
 with the resonator. A common resonator you may be familiar with is a
 quartz crystal. It turns out, through something called the
 piezoelectric effect, if you *physically* squeeze (most) crystals you

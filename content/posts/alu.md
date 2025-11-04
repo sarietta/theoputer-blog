@@ -14,7 +14,7 @@ It's nice to start understanding the Theoputer here with the
 Arithmetic Logic Unit (ALU), which is really the only part of the
 computer that does much computation in the traditional sense. I
 remember being fascinated when I first learned addition could be
-encoded as series of logical operations. It's just such an incredible
+encoded as a series of logical operations. It's just such an incredible
 connection between two domains that are obviously related but not
 obviously interchangeable. This was the first "module" that I ever
 built for the Theoputer, and I did so first on a breadboard, before
@@ -75,7 +75,7 @@ significant digit.
 
 ### Binary Addition
 
-The rules for addition in any base (binary, decimal, base-100) is
+The rules for addition in any base (binary, decimal, base-100) are
 always the same. You follow the *same* process:
 
 1. Add the least-significant digits
@@ -85,7 +85,7 @@ always the same. You follow the *same* process:
 
 Let's try this with two binary numbers: `1011` and `0011`. If you're
 just starting out with binary numbers, you can read all about
-[Base-N Numbers]({{<iref "base-n-numbers" >}}), or you an take my word
+[Base-N Numbers]({{<iref "base-n-numbers" >}}), or you can take my word
 for it that \(1011_2 = 11_{10}\) and \(0011_2 = 3_{10}\). So we are
 effectively adding `11 + 3 = 14`. Let's run our process just as we did
 before with the decimal numbers `180` and `140`, but this time, we
@@ -162,7 +162,7 @@ Let's break apart the two numbers we create in each step of our
 addition process. We have the output at digit position \(i\), call it
 \(o_i\), and the carry \(c_i\). Assume we have two inputs \(a\) and
 \(b\). How can we write down an equation in boolean algebra / logic
-that will gives us the value of \(o_i\) as a function of the two
+that will give us the value of \(o_i\) as a function of the two
 digits \(a_i\), \(b_i\), and \(c_{i-1}\), recalling that we need to
 account for that carry. Let's consult the table above:
 
@@ -262,7 +262,7 @@ $$
 
 ## Putting Together the Adders
 
-We've went through the details to get the equations for how to add two
+We've gone through the details to get the equations for how to add two
 binary digits, accounting for carry:
 
 $$
@@ -313,7 +313,7 @@ easier reading:
 <falstad-circuit src="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjAbCAMB00IQVnHATAtB2LBmaAHGhAJwlYhLSWXVICmAtGGAFBhUgAsC4Ja3ElDD8YIASiTskXbrxYSwAhWIF1WAdznUhIXEgG7om7eCxR9y8zBOWzFgyCO3HutGlnOt72UoJ7cYTR-Yy1cQPBggKgMENsI2NNE0OjI-x5qPxsOWQgkIP9zfyzqNUppajyYwhAsR2TxMSktJCVwNqRRFRTO5Taq9rUTAZEJLtEe8bG+oe8Pbn8Iea44rSXZFZB18C5ZFO2wXa35nxs1k-mB0-38ndz5w72TLl1Ryja3no-RVoFsWfefywAjqQKGHAEBF4pwIbnmpRozRAUNKPFq9TRKVB4jR2P+Z3RfxqKPENSxEGKUX4lNWyLhnii11YGAo1LSTmsWVkAHk2CzxPNXtZdLIAIJ86AUU5ZMCcqKyABCbAAMgLPDF5lCxGAQAAzACGABsAM70GjGVXSxkPNqZPVG03m1iW5b+U64MrUA0ms0oYwAWScUSybO64lgUkDbNwBAZ-kCIXDUhdshjsndFLEXodvpsKb09Xm4Sgdu9jr9zMlar0sfsNY2IAVaErUqLjllDgEYub-OjtfIFlrPObWlhUBWOnlWvJ8f7UTTBOxXAgshJy6eWiXumxBlpa+3jheJekkN4E7p4+njUkJl+lCiO6iXy7mzvu4JR+4r7au1pAwyxwbLw+yupUtzniBQGVKBBLbPg9xQQSvRfv4yEJrB4GvqIv5IaI6EDOhz56JmaGZsYHBgeOK6Etw1EIjeORbLcC5FPWqhNPEg6IQuKTFrRiHrgSfELnxgkpO6tbCbWvGOHY7qODJXYegWAh2CkAFcMpdiaQCAF2PpCnSNxJFtIR17lBRpg4Z+OEIuo5yptAcZ6E5BJsqc0auSkbLnmy+TUJBlAQJOqHBdknAAVgrmflFeyNOojEAdsd7bHZ5RaElNR2MFtJJQQ8aOBStLZflKlbGSLgCDl1bVeJlxonxK4BZxWwNREwLNWE7UYKYHVCRETWmIN5EyExUCDaxw3mVIlkDH12J9WlSIpfMyGpbeojbAM61rLcsWUKI+2TCCrlrfCwyrWFW23IF23zHgx4ObUA17RENzjbc12PYIUD7XeR23m0f1A9JgMgrWC2gxCyK8A9F7PSW8XpTD1ALY42JYujWPgxuNF9SSi0mJNaJssNJhjgjQaFG9LZU61OjWINPK4LTpzVR25XpCAoos-ybNohzTONiz+bVacyEBfaPpOqLaJs-CYhlrmAZ04NpMK2gEasEAA">
 </falstad-circuit>
 
-The real schematic looks pretty much identicial to that one, except
+The real schematic looks pretty much identical to that one, except
 for some headers to allow the ALU to be modularly inserted into other
 things. Initially the thing it was inserted into was a breadboard for
 testing. Once it proved to be working correctly, its destination was
@@ -340,7 +340,7 @@ too many chips in them to be worth it when we can just rely on the
 speed of the computer to repeatedly add or subtract things to
 "simulate" multiplication and division.
 
-THe one part of the ALU that we didn't talk about that *is* in the
+The one part of the ALU that we didn't talk about that *is* in the
 Theoputer ALU is subtraction. The solution for subtraction is
 beautifully simple circuit-wise, but rather clever and non-intuitive
 (at first). If you want to know about that part of the ALU, the post

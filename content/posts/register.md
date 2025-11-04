@@ -37,7 +37,7 @@ following aesthetically-pleasing circuit:
 This is called an SR Latch. The S and R refer to the Set and Reset
 inputs. What is noteworthy is that this circuit will hold whatever
 value is in the two NAND gates until the opposite change signal is
-activated. What we want out of a register is to hold o to a value
+activated. What we want out of a register is to hold on to a value
 (like memory) until we choose to set it to something else, *but* we
 only want that change to happen during the execute phase of our clock
 cycle:
@@ -58,7 +58,7 @@ and T being the common ones). Here's a quick description of each:
 - D: Simple data bit and an edge signal, where the data will be
   latched in only on the edge signal transition.
 - T: Simple toggle signal bit and an edge signal, where the latched
-  value will toggleo when the toggle signal is high and there is an
+  value will toggle when the toggle signal is high and there is an
   edge signal transition.
 
 What we need is the D Flip Flop! Well, ideally eight of them, because
@@ -70,7 +70,7 @@ The Theoputer currently uses the same chip for all of its registers,
 and there are many (10) registers throughout the computer. The
 specific chip we use is the SN74LV374APWR, which is a TSSOP package
 LV-series 74*374 "Octal Edge-Triggered D-Type Flip-Flops With 3-State
-Outputs". A mouthfull, so let's break that down.
+Outputs". A mouthful, so let's break that down.
 
 The package refers to the physical dimensions of the chip and its
 pins. In this case it's the TSSOP package, which means mere mortals
@@ -80,7 +80,7 @@ small. But that also means the size it takes up on a board is small.
 
 > Note: It's the APWR, and specifically the PWR, of the chip name that
   indicates it's TSSOP. Why did they do this?! Why? I have no answers
-  for you. It's madening. I'm sure they had their reasons but... sigh.
+  for you. It's maddening. I'm sure they had their reasons but... sigh.
 
 The LV-series chips are very nice. They are a modern version of some
 chip families you may have heard about (74LS and 74HC being perhaps
@@ -137,7 +137,7 @@ about how it would operate in the real world:
 </svg-viewer>
 
 > Note: This is one of the first schematics I made in this project,
-  and you can see my amatuerish skills on full display here.
+  and you can see my amateurish skills on full display here.
 
 It may look perfectly fine. Indeed this is the schematic that produced
 the assembled board at the beginning of the post and executed
@@ -217,7 +217,7 @@ to see that no matter what, if we have this enable signal and a
 read/write signal in one, we will always need an inverter.
 
 This is poor design, but it's hard to appreciate it until you think
-through how the register will actually be used in computer. The
+through how the register will actually be used in the computer. The
 solution is fairly straightforward. We just want to control read/write
 operations on the register with either all high signals or all low
 signals. The second register design already solved both the major flaw
@@ -236,7 +236,7 @@ from screwing the proverbial pooch.
 ## We Need a Montage
 
 Here are some nice photos of the register (both 16bit and 8bit) as it
-grew up from a flawed POS to a sleak non-pluggable dude:
+grew up from a flawed POS to a sleek non-pluggable dude:
 
 <div style="display:flex; flex-wrap: wrap; align-items: center; justify-content: center;">
 <img style="width: 50%; max-width: 300px" src="/img/registers/8bit-register.png" alt="Theoputer 8bit register V2 assembled">

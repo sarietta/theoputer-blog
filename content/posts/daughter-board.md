@@ -11,7 +11,7 @@ categories = ['Sub Systems']
 
 ## Introduction
 
-This is more of beach head than anything. The "Daughter Board" is very
+This is more of a beach head than anything. The "Daughter Board" is very
 complex and contains a considerable amount of the actual "CPU", so a
 single post about it isn't really feasible. This should just serve as
 more of a tour around the board itself, with pointers to the
@@ -450,7 +450,7 @@ look at the schematic:
     >
 </svg-viewer>
 
-Here we see there is a regster (ahoy there!), connected to a chip that
+Here we see there is a register (ahoy there!), connected to a chip that
 outputs if that register contains zero, and a few inputs:
 
 - ~~OP0~~ and ~~OP1~~ which control the type of branching as a 2bit number:
@@ -470,7 +470,7 @@ refer to the more in-depth post on the [Branch Control]({{< iref
 
 ### Instruction and Control
 
-This one is a douzy (spelling?). It's by far the most complex section
+This one is a doozy (spelling?). It's by far the most complex section
 of the Theoputer save for maybe the daughter board itself. There are
 several posts about this section, which is actually one of the three
 remaining plug-in boards to the daughter board. Start off on the
@@ -486,7 +486,7 @@ interfaces with the daughter board and thus the rest of the Theoputer:
     layers="Edge.Cuts, F.SilkS, Holes, F.Silkscreen"
     controls="basic+"></kicanvas-embed>
 
-That large outline is where the I&C board plugs in, and has you can
+That large outline is where the I&C board plugs in, and as you can
 (hopefully) see, there are six separate headers each of which is
 16pins! That's a lotta pins. Not every pin is used, although most
 are. At this small 1.27m pitch (distance between pins) it's far easier
@@ -531,7 +531,7 @@ Let's just go over some of the big groups:
   register should be read from ~~DBUS~~.
 - ~~PI~~: Used to control whether the program counter should be set
   from the ~~DBUS~~ lines.
-- ~~PS~~: Used to control whether the pgoram counter should be
+- ~~PS~~: Used to control whether the program counter should be
   incremented (stepped).
 - ~~ALU0~~ through ~~ALU3~~: Used to control which [ALU](#alu)
   operation should be performed.
@@ -693,7 +693,7 @@ is more of a parallel-leaning entity. This because of the 8bit nature
 of the computer. We always want to operate on 8bits at a time, which
 is similar to saying we want to work on 8bits in parallel. In some
 cases we even use 16bits (e.g. the [memory address register](#ram))
-but we certianly don't send one bit a time between parts of the
+but we certainly don't send one bit at a time between parts of the
 system.
 
 There are a number of ways to convert parallel-like signals into

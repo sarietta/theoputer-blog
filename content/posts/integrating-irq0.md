@@ -16,7 +16,7 @@ the time being some of this content may not make the most sense.
 
 In the Theoputer V4 there is no IRQ. This is *ok*, but it does limit
 some of the things we can do. Perhaps more importantly, all "modern"
-CPUs rely heavily on interrupts. That's not coincidence. Interrupts
+CPUs rely heavily on interrupts. That's no coincidence. Interrupts
 are very useful. If we want our CPU to know that it should respond to
 some external "thing", then we have two options:
 
@@ -123,7 +123,7 @@ specific case, but it's almost a certainty for the very complex
 ==PSHA== instruction (i.e. [Push A to Stack]()).
 
 So we cannot handle the interrupt as soon as it comes in. We must
-**wait** until we're done with the current instruction. then the CPU
+**wait** until we're done with the current instruction. Then the CPU
 will be at a known good state (nothing intermediate). Once we are done
 with the interrupt handling code, we just need to jump to what would
 have been the *next* instruction.
@@ -301,7 +301,7 @@ the PC, we've used CD74HCT161s and their datasheet states:
 I've highlighted the row I ?think? matters. Again, these tables
 sometimes are very hard for me to interpret. In this specific case, it
 looks like we want to keep the PC pretty cool and reduce our load
-capacitance. I don't have a good sense for what the load capicitance
+capacitance. I don't have a good sense for what the load capacitance
 is... fingers shall remain crossed.
 
 We need to store the PC address somewhere, of course, so we can jump

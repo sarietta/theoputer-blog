@@ -80,7 +80,7 @@ the input is, the only thing that matters is the first transition from
 low to high. Within the time range of the monostable multivibrator's
 delay before returning to its single stable state (low in this case),
 no other inputs matter. Now the question is what kind of circuit
-behaves like a monostable multivibrator. And of course there answer is
+behaves like a monostable multivibrator. And of course the answer is
 that there are many. In our case, since we're already married to the
 555 timer and it
 [definitely oscillates](/posts/clock/#controllable-oscillations), it's
@@ -130,7 +130,7 @@ pulses in the Theoputer:
 1. A manual pulse generator
 
 Switching between these is fairly straightforward. The Theoputer just
-uses some stand SPDT slide switches. We _could_ also debounce these
+uses some standard SPDT slide switches. We _could_ also debounce these
 switches, but it never has been important enough to deal with:
 
 <svg-viewer src="/img/clock/Clock - Rev C.2024-06-12.svg" viewBoxX="37.34544146889748" viewBoxY="-18.091502417450496" viewBoxWidth="179.7391341509268" viewBoxHeight="127.03261132207817">
