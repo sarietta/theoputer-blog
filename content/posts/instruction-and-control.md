@@ -2,7 +2,7 @@
 title = 'Instruction and Control'
 date = 2025-10-14T21:19:08-07:00
 description = "The name says it: instructions and control. This circuit / board is one of the most important parts of the Theoputer, responsible for fetching and decoding instructions. It's complicated, but integral."
-draft = true
+draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Electrical Engineering']
 tags = ['Instruction and Control', 'Instruction Set']
 +++
