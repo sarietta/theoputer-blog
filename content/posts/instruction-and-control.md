@@ -5,6 +5,7 @@ description = "The name says it: instructions and control. This circuit / board 
 draft = false
 categories = ['Sub Systems', 'Computer Engineering', 'Electrical Engineering']
 tags = ['Instruction and Control', 'Instruction Set']
+image = '/img/instruction-and-control/4x/phases-out.gif'
 +++
 
 ## Introduction
