@@ -1,5 +1,6 @@
 +++
 title = 'Assembler'
+description = "Small but mighty the assembler be. Some programming wizards might claim an assembler is all you really need to melt faces. Mere mortals such as myself work better with a compiler, but an assembler is still absolutely necessary."
 date = 2025-11-10T20:52:11-08:00
 draft = false
 categories = ['Computer Engineering', 'Computer Science']
