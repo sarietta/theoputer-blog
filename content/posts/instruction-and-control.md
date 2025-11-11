@@ -323,8 +323,6 @@ register's output buffer, which in turn is connected to the databus:
 
 > I've added in the ROM chip here as well just for some extra clarity.
 
-
-
 ### Long-Argument Instructions
 
 We are dipping our toe slightly into the territory of the decoding
@@ -382,10 +380,10 @@ instruction. Thus we didn't strictly *need* any instruction registers.
 All of this business with variable-length arguments seems a little too
 clever. And that's a violation of the motto Never Be Clever. In fact,
 in more modern versions of the Theoputer, there are additional
-instructions that use the values in the A and B CPU registers to
-perform jumps and memory address operations. Since each register is
-8-bits long, together A and B allow for the full 16-bit parameters
-needed to address the entirety of the system's ROM or RAM.
+instructions (e.g. ==JPP==) that use the values in the A and B CPU
+registers to perform jumps and memory address operations. Since each
+register is 8-bits long, together A and B allow for the full 16-bit
+parameters needed to address the entirety of the system's ROM or RAM.
 
 This is especially true for the assembly output of the [Cish]({{< iref
 "cish.md" >}}) compiler, which can't reliably know if 8 or 12 bits is

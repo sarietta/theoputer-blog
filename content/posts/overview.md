@@ -70,7 +70,7 @@ and Control board:
 Those three ROM chips get flashed with data in such a way that the
 instruction ==LAI 0x10== maps to those two micro-instructions.
 
-By way of example, the row in [ISA 5.1]() for ==LAI 0x10== (Load A w/
+By way of example, the row in [ISA 5.1](https://docs.google.com/spreadsheets/d/e/2PACX-1vSE5IuwuuaagTtlDdA5kAVRtrjIOu0TMAJLNbj9wNK_MBuyZN0QGJkR1-Wu-uy5JEeAMaSScIFOH-2s/pubhtml?gid=533494001&single=true) for ==LAI 0x10== (Load A w/
 immediate) says the opcode is:
 
 $$
