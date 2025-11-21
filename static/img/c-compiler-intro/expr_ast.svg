@@ -1,0 +1,140 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0.00 0.00 870.65 220.09">
+<g id="graph0" class="graph" transform="scale(4.1667 4.1667) rotate(0) translate(4 216.0861)">
+<title>ExprTree</title>
+<!-- prog -->
+<g id="node1" class="node">
+<title>prog</title>
+<polygon fill="#f0f0f0" stroke="#333333" points="573.5354,-212.0861 519.5354,-212.0861 519.5354,-176.0861 573.5354,-176.0861 573.5354,-212.0861"/>
+<text text-anchor="middle" x="546.5354" y="-190.4861" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">prog</text>
+</g>
+<!-- int_assign -->
+<g id="node2" class="node">
+<title>int_assign</title>
+<polygon fill="#f0f0f0" stroke="#333333" points="499.7215,-132.0646 403.3493,-132.0646 403.3493,-96.0646 499.7215,-96.0646 499.7215,-132.0646"/>
+<text text-anchor="middle" x="451.5354" y="-110.4646" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">int_assignment</text>
+</g>
+<!-- prog&#45;&gt;int_assign -->
+<g id="edge1" class="edge">
+<title>prog-&gt;int_assign</title>
+<path fill="none" stroke="#000000" d="M524.9785,-175.928C511.9819,-164.9805 495.2474,-150.8846 481.0358,-138.9137"/>
+<polygon fill="#000000" stroke="#000000" points="482.9102,-135.9164 473.0071,-132.1509 478.4005,-141.2702 482.9102,-135.9164"/>
+</g>
+<!-- tok_eol -->
+<g id="node10" class="node">
+<title>tok_eol</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="546.5354" cy="-114.0646" rx="28.082" ry="26.0431"/>
+<text text-anchor="middle" x="546.5354" y="-117.6646" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">EOL</text>
+<text text-anchor="middle" x="546.5354" y="-103.2646" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">';'</text>
+</g>
+<!-- prog&#45;&gt;tok_eol -->
+<g id="edge2" class="edge">
+<title>prog-&gt;tok_eol</title>
+<path fill="none" stroke="#000000" d="M546.5354,-175.928C546.5354,-168.3713 546.5354,-159.3144 546.5354,-150.4917"/>
+<polygon fill="#000000" stroke="#000000" points="550.0355,-150.3462 546.5354,-140.3463 543.0355,-150.3463 550.0355,-150.3462"/>
+</g>
+<!-- tok_eof -->
+<g id="node11" class="node">
+<title>tok_eof</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="619.5354" cy="-114.0646" rx="27" ry="18"/>
+<text text-anchor="middle" x="619.5354" y="-110.4646" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">EOF</text>
+</g>
+<!-- prog&#45;&gt;tok_eof -->
+<g id="edge3" class="edge">
+<title>prog-&gt;tok_eof</title>
+<path fill="none" stroke="#000000" d="M563.1003,-175.928C573.5906,-164.4286 587.2501,-149.4553 598.503,-137.1201"/>
+<polygon fill="#000000" stroke="#000000" points="601.3389,-139.2046 605.4927,-129.458 596.1674,-134.487 601.3389,-139.2046"/>
+</g>
+<!-- tok_int -->
+<g id="node3" class="node">
+<title>tok_int</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="73.5354" cy="-26.0215" rx="73.5709" ry="26.0431"/>
+<text text-anchor="middle" x="73.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">INT_KEYWORD</text>
+<text text-anchor="middle" x="73.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">'int'</text>
+</g>
+<!-- int_assign&#45;&gt;tok_int -->
+<g id="edge4" class="edge">
+<title>int_assign-&gt;tok_int</title>
+<path fill="none" stroke="#000000" d="M403.2522,-105.4955C344.3679,-94.6901 241.9911,-74.7567 155.5354,-52.0431 149.4683,-50.4491 143.1848,-48.6778 136.9192,-46.8301"/>
+<polygon fill="#000000" stroke="#000000" points="137.7063,-43.4119 127.1218,-43.8785 135.687,-50.1144 137.7063,-43.4119"/>
+</g>
+<!-- tok_spc1 -->
+<g id="node4" class="node">
+<title>tok_spc1</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="193.5354" cy="-26.0215" rx="28.5158" ry="26.0431"/>
+<text text-anchor="middle" x="193.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">SPC</text>
+<text text-anchor="middle" x="193.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">' '</text>
+</g>
+<!-- int_assign&#45;&gt;tok_spc1 -->
+<g id="edge5" class="edge">
+<title>int_assign-&gt;tok_spc1</title>
+<path fill="none" stroke="#000000" d="M403.1598,-105.1672C357.4814,-95.6802 287.7874,-78.3614 231.5354,-52.0431 229.1907,-50.9461 226.8313,-49.7104 224.4984,-48.3886"/>
+<polygon fill="#000000" stroke="#000000" points="226.0682,-45.2446 215.7193,-42.9752 222.3942,-51.203 226.0682,-45.2446"/>
+</g>
+<!-- tok_var -->
+<g id="node5" class="node">
+<title>tok_var</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="322.5354" cy="-26.0215" rx="82.072" ry="26.0431"/>
+<text text-anchor="middle" x="322.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">VARIABLE_NAME</text>
+<text text-anchor="middle" x="322.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">'a'</text>
+</g>
+<!-- int_assign&#45;&gt;tok_var -->
+<g id="edge6" class="edge">
+<title>int_assign-&gt;tok_var</title>
+<path fill="none" stroke="#000000" d="M425.1191,-96.0353C408.0391,-84.3782 385.4084,-68.9326 365.7491,-55.515"/>
+<polygon fill="#000000" stroke="#000000" points="367.4769,-52.4568 357.2442,-49.7104 363.5309,-58.2386 367.4769,-52.4568"/>
+</g>
+<!-- tok_spc2 -->
+<g id="node6" class="node">
+<title>tok_spc2</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="451.5354" cy="-26.0215" rx="28.5158" ry="26.0431"/>
+<text text-anchor="middle" x="451.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">SPC</text>
+<text text-anchor="middle" x="451.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">' '</text>
+</g>
+<!-- int_assign&#45;&gt;tok_spc2 -->
+<g id="edge7" class="edge">
+<title>int_assign-&gt;tok_spc2</title>
+<path fill="none" stroke="#000000" d="M451.5354,-95.822C451.5354,-86.1813 451.5354,-73.9937 451.5354,-62.5108"/>
+<polygon fill="#000000" stroke="#000000" points="455.0355,-62.2566 451.5354,-52.2567 448.0355,-62.2567 455.0355,-62.2566"/>
+</g>
+<!-- tok_eq -->
+<g id="node7" class="node">
+<title>tok_eq</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="569.5354" cy="-26.0215" rx="71.3875" ry="26.0431"/>
+<text text-anchor="middle" x="569.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">EQUALS_SIGN</text>
+<text text-anchor="middle" x="569.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">'='</text>
+</g>
+<!-- int_assign&#45;&gt;tok_eq -->
+<g id="edge8" class="edge">
+<title>int_assign-&gt;tok_eq</title>
+<path fill="none" stroke="#000000" d="M475.6992,-96.0353C491.2527,-84.4305 511.8382,-69.071 529.7646,-55.6957"/>
+<polygon fill="#000000" stroke="#000000" points="531.8644,-58.4958 537.7863,-49.7104 527.6783,-52.8854 531.8644,-58.4958"/>
+</g>
+<!-- tok_spc3 -->
+<g id="node8" class="node">
+<title>tok_spc3</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="687.5354" cy="-26.0215" rx="28.5158" ry="26.0431"/>
+<text text-anchor="middle" x="687.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">SPC</text>
+<text text-anchor="middle" x="687.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">' '</text>
+</g>
+<!-- int_assign&#45;&gt;tok_spc3 -->
+<g id="edge9" class="edge">
+<title>int_assign-&gt;tok_spc3</title>
+<path fill="none" stroke="#000000" d="M489.2229,-96.0469C495.9104,-93.1698 502.8687,-90.3767 509.5354,-88.0431 570.1742,-66.8171 591.0326,-78.5954 649.5354,-52.0431 651.9768,-50.935 654.4306,-49.6708 656.8516,-48.3103"/>
+<polygon fill="#000000" stroke="#000000" points="658.7012,-51.2818 665.3949,-43.0693 655.0408,-45.3151 658.7012,-51.2818"/>
+</g>
+<!-- tok_lit -->
+<g id="node9" class="node">
+<title>tok_lit</title>
+<ellipse fill="#d4e4ff" stroke="#0055bb" cx="798.5354" cy="-26.0215" rx="64.2337" ry="26.0431"/>
+<text text-anchor="middle" x="798.5354" y="-29.6215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">INT_LITERAL</text>
+<text text-anchor="middle" x="798.5354" y="-15.2215" font-family="Helvetica, Arial, sans-serif" font-size="12.00" fill="#000000">'100'</text>
+</g>
+<!-- int_assign&#45;&gt;tok_lit -->
+<g id="edge10" class="edge">
+<title>int_assign-&gt;tok_lit</title>
+<path fill="none" stroke="#000000" d="M488.1222,-95.9546C495.111,-92.9835 502.4571,-90.1819 509.5354,-88.0431 602.6995,-59.8925 631.3286,-76.478 725.5354,-52.0431 730.9077,-50.6496 736.4441,-49.0296 741.9521,-47.2922"/>
+<polygon fill="#000000" stroke="#000000" points="743.3847,-50.5058 751.7945,-44.0618 741.2017,-43.8549 743.3847,-50.5058"/>
+</g>
+</g>
+</svg>

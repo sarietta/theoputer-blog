@@ -129,7 +129,7 @@ programs!
 And *that* is one of the most important reasons to use a higher-level
 language. This is even more acute in real computers. Imagine having to
 rewrite every program when a new Intel processor comes out. Or having
-two entirely different codebases for people how happen to have ARM64
+two entirely different codebases for people who happen to have ARM64
 chips and those who have AMD chips. Those will all have different ISA
 versions, but you will only need to adjust the compilers and recompile
 programs for everything to work.
@@ -137,3 +137,367 @@ programs for everything to work.
 In short, using a higher-level language abstracts away the details of
 the underlying ISA. That abstraction leads to fewer assumptions and
 ultimately a better overall system. Ahhhh, engineering. Yum.
+
+## The Compiler Parts
+
+flex, yacc, and bison oh my! Those words probably mean nothing to
+you. They are the names of *old*, but still interesting ways of
+defining two very important parts of a compiler:
+
+1. Lexer
+1. Parser
+
+These are fancy jargon terms. The idea behind a compiler is that we
+want to split compilation up into two passes (not coincidentally
+corresponding to the two parts):
+
+1. Break up the program into a series of individual parts
+1. Make sure the individual parts are in the correct order
+
+### Natural Language Grammar
+
+You can think of the two operations above as how you probably
+understand what you're reading right here. Consider this sentence:
+
+"The Theoputer is awesome"
+
+You almost certainly break that up into individual words (parts) and
+then you read left-to-right and understand the sentence as long as the
+order is correct. As a counter-example, take this sentence:
+
+"The is awesome Theoputer"
+
+You break that up into words, but they're not in the correct order so
+you probably can discern the meaning of that sentence. Natural
+language isn't the best example because the rules are not strictly
+adhered to, but the point remains.
+
+How do you know that the words from the first example are in the
+correct order compared to the second example? Well if you're a native
+English speaker/reader you probably don't even notice that you're
+actually applying the **grammar** rules of English as you take the
+words and ensure they're in the correct order.
+
+Loosely speaking, because natural language is **not** strict, English
+sentences are valid if they have the following grammar:
+
+```
+${article} ${subject} ${verb} ${adjective} ${period}
+```
+
+Obviously there are many other ways to make a valid English sentence,
+but the above is definitely one of them. If we look at the first
+example, we can break it into words and assign roles first via lexing:
+
+```
+"The" -> article
+"Theoputer" -> properNoun
+"is" -> verb
+"awesome" -> adjective
+"." -> period
+```
+
+Noting that a `properNoun` can be a `subject` we can see that the
+first sentence satisfies the grammar rule. Let's look at the second
+sentence:
+
+```
+"The" -> article
+"is" -> verb
+"awesome" -> adjective
+"Theoputer" -> properNoun
+"." -> period
+```
+
+There is no grammar rule for the English language that allows the
+structure:
+
+```
+${article} ${verb} ${adjective} ${subject} ${period}
+```
+
+You or your first (?) grade teacher might say that the "verb has no
+subject" in the second example.
+
+### Machine Language
+
+Machine languages are very similar to idealized natural languages. We
+also want to ssplit the input into a series of parts and then make
+sure those parts adhere to the grammar of the machine language. That's
+how a compiler can *recognize* an arbitrary string as a directive,
+just like you recognize the strings above as sentences.
+
+The first step of breaking a string into parts is the job of a
+lexer. The parts have a special name: **tokens**. They probably could
+have been called "words" like in natural language, but they're not.
+
+Just like in English each token is assigned a role. Those roles are
+called **terminals** and the (token, terminal) pair is passed to the
+parser to see if it matches the grammar of the machine language.
+
+Let's take a simplified example. Imagine we have a machine language
+that has only one kind of statement allowed, which we'll call variable
+assignment to a number. We might define the grammar of that as:
+
+```
+${variableType} ${variableName} ${equalsSign} ${number}
+```
+
+Now we need to define the tokens of this language and their
+corresponding terminals:
+
+```
+"=" -> equalsSign
+"int" -> variableType
+"[0-9]+" -> number
+"[a-zA-Z][a-zA-Z0-9]+" -> variableName
+```
+
+Ok. That might look weird if you don't know what a regular expression
+is. A regular expression is a language itself! That's maybe even
+*more* confusing. But it will be extremely helpful to understand
+regular expressions when we look at a real machine language
+grammar. This post is not going to cover regular expressions, however,
+because they can be very complicated. Honestly, a solid Google search
+will be a better resource than anything else, and they are so
+ubiquitous that it won't be hard to find a good explanation.
+
+Suffice to say, `[0-9]` means "match any digit from 0 to 9, the `+`
+means match as many of the previous thing that's available. So
+`[0-9]+` means match any sequence of digits, which is all of the
+[natural numbers](https://en.wikipedia.org/wiki/Natural_number). Sorry
+negative numbers.
+
+`[a-zA-Z]` is similar, but it means to match any character between
+lowercase 'a' and uppercase 'Z', so the line `[a-zA-Z][a-zA-Z0-9]+`
+means "match any sequence of numbers and letters, as long as the
+sequence starts with a letter".
+
+You'll notice the care taken here to ensure there is no ambiguity
+between the `number` and `variableName` terminal definitions. Numbers
+*must* start with a digit and variables *never* start with a
+digit. That means we can always differentiate numbers from variable
+names.
+
+Ok, let's try this grammar on the following two inputs:
+
+1. "int foo = 4"
+2. "foo 4 = int"
+
+For case (1) we have:
+
+```
+"int" -> variableType
+"foo" -> variableName
+"=" -> equalsSign
+"4" -> number
+```
+
+That matches our grammar! If you're very observant you may have gotten
+mad though. Shouldn't `int` have been matches by `variableName`? Most
+lexers (maybe all?) will take the first terminal that matches in order
+the terminals are listed. This is necessary to allow for special
+keywords (like "int") while also allowing for greater flexibility in
+the use of certain character sequences.
+
+Let's look at input (2):
+
+```
+"foo" -> variableName
+"4" -> number
+"=" -> equalsSign
+"int" -> variableType
+```
+
+That does **not* match our grammar, and thus our recognizer should say
+it doesn't recognize this string. In other words, this should be a
+compiler error.
+
+## What Happens Next?
+
+We now know how to split up an input program via the lexer and
+determine if it's a valid program via the parser. But we haven't
+generated any machine code yet and that's all a CPU can execute.
+
+The parser just tells us that a given program/string is valid. It
+doesn't actually do the translation to machine code. However, in the
+process of validating the program, the parser must build something
+called an Abstract Syntax Tree (AST). This is similar to what we saw
+before when we looked at the grammar assignments:
+
+```
+"int" -> variableType
+"foo" -> variableName
+"=" -> equalsSign
+"4" -> number
+```
+
+This isn't a tree through. It's just a map from terminals to grammar
+entities. That is due to the way we specified this particular grammar:
+
+```
+${variableType} ${variableName} ${equalsSign} ${number}
+```
+
+### Real Grammars
+
+This was all made up. Real grammars for programming languages are more
+rigorously defined. This is an entire field (or maybe *was*) of study
+deeply related to linguistics and early computer science
+foundations. As such, we will move on quickly and just note that most
+modern grammars are defined in something called
+[Backus–Naur form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form),
+or more specifically Extended Backus–Naur form (EBNF).
+
+It is not important to deeply understand what EBNF is. It is just a
+very common syntax for writing grammars that define programming
+languages.
+
+> There is a meta / recursive things here. EBNF is itself a
+  grammar. When you write a programming language grammar, you use the
+  EBNF grammar to write the rules of the programming language grammar.
+
+From a grammar in EBNF we can generate a parser implementation that
+generates an AST. The AST can be used to generate the machine code
+that implements the operations defined in the AST. This is all a bit
+too abstract now so let's turn to an example.
+
+Imagine we are writing the grammar for handling integer assignments in
+C only. Here is a grammar, in EBNF, that would handle all such
+programs:
+
+```antlr
+grammar ExprParser;
+
+prog:
+      int_assignment EOL
+      EOF
+    ;
+
+int_assignment:
+      INT_KEYWORD SPC+ VARIABLE_NAME SPC+ EQUALS_SIGN SPC+ INT_LITERAL
+    ;
+
+INT_KEYWORD   : 'int';
+INT_LITERAL   : [0-9]+;
+EQUALS_SIGN   : '=';
+VARIABLE_NAME : [A-Za-z_][A-Za-z0-9_]*;
+
+SPC: ' ';
+EOL : ';';
+```
+
+That might look a little intimidating at first, but it's not too
+complicated. We are defining a top-level grammar rule `prog` and that
+`prog` will only parse strings that start with an `int_assignment`
+followed by the terminal `EOL` and finally by the terminal `EOF`. It
+is an annoying convention that grammar "rule" that starts with a
+capital letter is *assumed* to be a terminal, i.e. handled by the
+lexer (:facepalm).
+
+Recall this is the *root* and thus if we think of the grammar as a
+tree, this root node has three children: `int_assignment`, `EOL`, and
+`EOF`. `EOL` and `EOF` are actually also leaf nodes because they are
+not grammar rules. They *terminate* the parsing. `int_assignment` is a
+rule itself, so it has a subtree that is defined as a sequence of the
+terminals: `INT_KEYWORD`, `SPC` at least once but as many times as the
+programmer wants, a `VARIABLE_NAME`, again `SPC`s, an `EQUALS_SIGN`,
+more `SPC`s, and finally an `INT_LITERAL`.
+
+You'll note the `SPC+` uses the regular expression notation we
+discussed earlier. See! They are so ubiquitous they're used here in
+the grammar definition to help parsimoniously describe terminals.
+
+Let's look at a program and see how the grammar above produces an AST
+from it:
+
+```c
+int a = 100;
+```
+
+First we need to ensure this program is parseable. All programs must
+have an `int_assignment` followed by a `;` and then the end of the
+file. This program seems to following that, but let's break up the
+`int_assignment`. This the case above we have the string `int`,
+followed a space, then the string `a`, then a space, then the string
+`=`, then a space, and finally the string `100`. Sure enough we have
+the correct form of the `int_assignment` rule defined in our
+grammar. Not only that, as we went through the parsing exercise you'll
+note that we start at all of the nodes in the root rule (`prog`) and
+then went to the next rule `int_assignment`. This is exactly how a
+tree is defined, and you could just as easily express the program
+above as:
+
+<svg-viewer
+    viewBoxX="-303.1983797307098" viewBoxY="-46.026463279775385" viewBoxWidth="4106.496389476374" viewBoxHeight="1038.0644832048786"
+    src="/img/c-compiler-intro/expr_ast.svg"></svg-viewer>
+
+### Using an AST
+
+From an AST we can build the real guts of a compiler. The AST tells us
+what the pieces of the program are and how they relate to each other
+in a very structured, hierarchical way. In the Cish compiler, we are
+using a grammar library called [ANTLR](https://www.antlr.org/), which
+will take a grammar written in EBNF and create the lexer, parser, and
+the *visitor* code we need.
+
+The visitor is really a *tree* visitor and it just traverses the AST
+in depth-first order starting at the root. This is exactly what we did
+in written prose above.
+
+In Cish, the compiler is written in Typescript and thus the ANTLR
+library is configured to take our grammar and generate the necessary
+code to lex, parse, and visit an input program in Typescript.
+
+Without going into too many of the details on ANTLR, suffice it to say
+that the visitor that ANTLR generates provides a set of callback
+functions that are invoked whenever ANTLR encounters a particular node
+in the AST as it traverses.
+
+Taking our example above, we would define callbacks for when ANTLR
+encounters the `prog` rule (the root), and the `int_assignment`
+rule. Note that the terminals are not rules and thus have no
+callbacks. They are just terminals or sequences of characters with no
+additional information about how they relate to other terminals or
+rules.
+
+Let's carry this further and consider what the callback for the
+`int_assignment` might look like:
+
+```typescript
+visitInt_assignment(context: Int_assignmentContext): string {
+  const value = Number(context.INT_LITERAL().text)
+  return `LAI ${value}\n`;
+}
+```
+
+This is what the actual callbacks look like. They are called by ANTLR
+with a `context` object that contains information about what ANTLR
+parsed in the rule. In this case we are extracting out one of the
+terminals that was parsed (lexed really) from this context, converting
+it to a number, and then returning what we want ANTLR to write out as
+a result of visiting this AST node. In this very contrived example we
+are telling ANTLR to emit the [Theoputer Assembly]({{< iref
+"assembly.md" >}}) instruction ==LAI ${value}== which was parsed as an
+`INT_LITERAL`.
+
+Congratulations. This is a compiler! You can see clearly that we are
+taking in one language (integer assignments in C) and produces
+instructions in another language (assembly). Remembering all the way
+back to the begginning of this post we can see that we have done all
+of the operations we need to do compilation:
+
+![Showing code going into compiler to assembly which is in turn assembled into machine code](/img/c-compiler-intro/4x/steps@4x.png)
+{class="padded-white medium center"}
+
+## Tip of the Iceberg
+
+Despite the length of this post this really just scratches the surface
+of the actual Cish compiler for the Theoputer. Bust most of the extra
+information is about the various and often complex callback functions
+like the contrived one we considered above.
+
+It remains to be seen how deep I will ultimately go in my
+documentation of the compiler, because it is dense and very complex,
+but we shall see. Check out any of the posts with the tag 'Compiler'
+if you want to learn more.
