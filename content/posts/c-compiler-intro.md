@@ -38,7 +38,7 @@ This is where some pedantry may enter the conversation because you'll
 note that compilation is actually just one step in the
 "compiler". This is a fairly common way to describe things
 though. Most people mean "compile and assemble" when they use the word
-"compiler". However, these are often two distinct prorams, even in
+"compiler". However, these are often two distinct programs, even in
 many common *real* C compilers.
 
 At the end of the day we need to produce a sequence of opcodes that
@@ -100,7 +100,7 @@ called ==MUL== and it will multiply the contents of register A by the
 contents of register B. Why didn't you have this before? Because you
 didn't know it was going to be used a lot.
 
-So you go through the process of updating the ISA, reflashing the
+So you go through the process of updating the ISA, re-flashing the
 [microcoder ROMs]({{< iref "instruction-microcoder.md" >}}), and
 loading your new ISA into the assembler. But you're not finished yet!
 You have 10 programs, each with an average of 100 lines. It's time for
@@ -113,7 +113,7 @@ other instructions! You have to adjust how that instruction behaves
 and go back through all of those programs and fix everything...
 
 You can see where this is going. The problem here is that you're
-creating new *versions* of the ISA, adjusting the setof instructions
+creating new *versions* of the ISA, adjusting the set of instructions
 the computer understands, and thus necessitating a full pass over
 every program you've ever written to use the new version of the ISA.
 
@@ -129,7 +129,7 @@ programs!
 And *that* is one of the most important reasons to use a higher-level
 language. This is even more acute in real computers. Imagine having to
 rewrite every program when a new Intel processor comes out. Or having
-two entirely different codebases for people who happen to have ARM64
+two entirely different code bases for people who happen to have ARM64
 chips and those who have AMD chips. Those will all have different ISA
 versions, but you will only need to adjust the compilers and recompile
 programs for everything to work.
@@ -222,7 +222,7 @@ subject" in the second example.
 ### Machine Language
 
 Machine languages are very similar to idealized natural languages. We
-also want to ssplit the input into a series of parts and then make
+also want to split the input into a series of parts and then make
 sure those parts adhere to the grammar of the machine language. That's
 how a compiler can *recognize* an arbitrary string as a directive,
 just like you recognize the strings above as sentences.
@@ -353,9 +353,10 @@ It is not important to deeply understand what EBNF is. It is just a
 very common syntax for writing grammars that define programming
 languages.
 
-> There is a meta / recursive things here. EBNF is itself a
-  grammar. When you write a programming language grammar, you use the
-  EBNF grammar to write the rules of the programming language grammar.
+> There is a meta / recursive thing here that can be a little tricky
+  to think through. EBNF is itself defined by a grammar. When you
+  write a programming language grammar, you use the EBNF grammar to
+  write the rules of the programming language grammar.
 
 From a grammar in EBNF we can generate a parser implementation that
 generates an AST. The AST can be used to generate the machine code
@@ -391,18 +392,24 @@ That might look a little intimidating at first, but it's not too
 complicated. We are defining a top-level grammar rule `prog` and that
 `prog` will only parse strings that start with an `int_assignment`
 followed by the terminal `EOL` and finally by the terminal `EOF`. It
-is an annoying convention that grammar "rule" that starts with a
+is an annoying convention that a grammar "rule" that starts with a
 capital letter is *assumed* to be a terminal, i.e. handled by the
 lexer (:facepalm).
 
-Recall this is the *root* and thus if we think of the grammar as a
-tree, this root node has three children: `int_assignment`, `EOL`, and
-`EOF`. `EOL` and `EOF` are actually also leaf nodes because they are
-not grammar rules. They *terminate* the parsing. `int_assignment` is a
-rule itself, so it has a subtree that is defined as a sequence of the
-terminals: `INT_KEYWORD`, `SPC` at least once but as many times as the
-programmer wants, a `VARIABLE_NAME`, again `SPC`s, an `EQUALS_SIGN`,
-more `SPC`s, and finally an `INT_LITERAL`.
+Recall that `prog` is the top-level rule or the *root* and thus if we
+think of the grammar as a tree, this root node has three children:
+`int_assignment`, `EOL`, and `EOF`. `EOL` and `EOF` are actually also
+leaf nodes because they are not parser rules. They *terminate* the
+parsing. In essence, parser rules map to non-leaf tree nodes and lexer
+rules map to leaf nodes.
+
+
+`int_assignment` is a parser rule; it clearly doesn't define a
+terminal. So `int_assignment` is a subtree in the AST that is has
+several children, all of which are terminals/leaf nodes:
+`INT_KEYWORD`, `SPC` at least once but as many times as the programmer
+wants, a `VARIABLE_NAME`, again `SPC`s, an `EQUALS_SIGN`, more `SPC`s,
+and finally an `INT_LITERAL`.
 
 You'll note the `SPC+` uses the regular expression notation we
 discussed earlier. See! They are so ubiquitous they're used here in
@@ -415,18 +422,19 @@ from it:
 int a = 100;
 ```
 
-First we need to ensure this program is parseable. All programs must
+First we need to ensure this program is parse-able. All programs must
 have an `int_assignment` followed by a `;` and then the end of the
-file. This program seems to following that, but let's break up the
-`int_assignment`. This the case above we have the string `int`,
-followed a space, then the string `a`, then a space, then the string
-`=`, then a space, and finally the string `100`. Sure enough we have
-the correct form of the `int_assignment` rule defined in our
-grammar. Not only that, as we went through the parsing exercise you'll
-note that we start at all of the nodes in the root rule (`prog`) and
-then went to the next rule `int_assignment`. This is exactly how a
-tree is defined, and you could just as easily express the program
-above as:
+file. This program seems to satisfy that, but let's break up the
+`int_assignment`. In the case above we have the string `int`, followed
+by a space, then the string `a`, then a space, then the string `=`,
+then a space, and finally the string `100`. Sure enough we have the
+correct form of the `int_assignment` rule defined in our grammar.
+
+Not only that, but as we went through the parsing exercise we started
+at the root parser rule `prog` and then went to the next parser rule
+`int_assignment`, collecting all of the terminals along the way. This
+is exactly how a tree is defined, and you could just as easily express
+the program above as:
 
 <svg-viewer
     viewBoxX="-303.1983797307098" viewBoxY="-46.026463279775385" viewBoxWidth="4106.496389476374" viewBoxHeight="1038.0644832048786"
@@ -436,14 +444,16 @@ above as:
 
 From an AST we can build the real guts of a compiler. The AST tells us
 what the pieces of the program are and how they relate to each other
-in a very structured, hierarchical way. In the Cish compiler, we are
-using a grammar library called [ANTLR](https://www.antlr.org/), which
-will take a grammar written in EBNF and create the lexer, parser, and
-the *visitor* code we need.
+in a very structured, hierarchical way. That AST form allows us to
+determine the instructions the CPU needs to perform to satisfy the
+AST.
 
-The visitor is really a *tree* visitor and it just traverses the AST
-in depth-first order starting at the root. This is exactly what we did
-in written prose above.
+In the Cish compiler, we are using a tool called
+[ANTLR](https://www.antlr.org/), which will take a grammar written in
+EBNF and create the lexer, parser, and the *visitor* code we need. The
+visitor is really a *tree* visitor and it just traverses the AST in
+depth-first order starting at the root. This is exactly what we did in
+written prose above.
 
 In Cish, the compiler is written in Typescript and thus the ANTLR
 library is configured to take our grammar and generate the necessary
@@ -474,18 +484,17 @@ visitInt_assignment(context: Int_assignmentContext): string {
 This is what the actual callbacks look like. They are called by ANTLR
 with a `context` object that contains information about what ANTLR
 parsed in the rule. In this case we are extracting out one of the
-terminals that was parsed (lexed really) from this context, converting
-it to a number, and then returning what we want ANTLR to write out as
-a result of visiting this AST node. In this very contrived example we
-are telling ANTLR to emit the [Theoputer Assembly]({{< iref
-"assembly.md" >}}) instruction ==LAI ${value}== which was parsed as an
-`INT_LITERAL`.
+terminals that was lexed from this context, converting it to a number,
+and then returning what we want ANTLR to write out as a result of
+visiting this AST node. In this very contrived example we are telling
+ANTLR to emit the [Theoputer Assembly]({{< iref "assembly.md" >}})
+instruction ==LAI ${value}== which was parsed as an `INT_LITERAL`.
 
 Congratulations. This is a compiler! You can see clearly that we are
-taking in one language (integer assignments in C) and produces
+taking in one language (integer assignments in C) and producing
 instructions in another language (assembly). Remembering all the way
-back to the begginning of this post we can see that we have done all
-of the operations we need to do compilation:
+back to the beginning of this post we can see that we have done all of
+the operations we need in order to call this compilation:
 
 ![Showing code going into compiler to assembly which is in turn assembled into machine code](/img/c-compiler-intro/4x/steps@4x.png)
 {class="padded-white medium center"}
@@ -493,7 +502,7 @@ of the operations we need to do compilation:
 ## Tip of the Iceberg
 
 Despite the length of this post this really just scratches the surface
-of the actual Cish compiler for the Theoputer. Bust most of the extra
+of the actual Cish compiler for the Theoputer. But most of the extra
 information is about the various and often complex callback functions
 like the contrived one we considered above.
 
