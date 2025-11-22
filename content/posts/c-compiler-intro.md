@@ -1,9 +1,11 @@
 +++
 title = 'C Compiler Intro'
+description = 'There is a Theoputer C(ish) compiler. It is complex and not for the faint of heart, but I feel compelled to document it. This is "just" and intro though, or the tip of the proverbial iceberg.'
 date = 2025-10-17T17:19:17-07:00
-draft = true
+draft = false
 categories = ['Computer Science']
 tags = ['Compiler']
+image = '/img/c-compiler-intro/4x/parsed@4x.png'
 +++
 
 ## Introduction
