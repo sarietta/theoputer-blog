@@ -511,4 +511,5 @@ like the contrived one we considered above.
 It remains to be seen how deep I will ultimately go in my
 documentation of the compiler, because it is dense and very complex,
 but we shall see. Check out any of the posts with the tag 'Compiler'
-if you want to learn more.
+if you want to learn more. I might recommend moving to the
+[Cish Grammar]({{< iref "cish-grammar.md" >}}).
