@@ -265,15 +265,17 @@ will be a better resource than anything else, and they are so
 ubiquitous that it won't be hard to find a good explanation.
 
 Suffice to say, `[0-9]` means "match any digit from 0 to 9, the `+`
-means match as many of the previous thing that's available. So
-`[0-9]+` means match any sequence of digits, which is all of the
+means match as many of the previous thing that's available, from 1
+(**not** 0) to an infinite number of times. So `[0-9]+` means match
+any sequence of digits, which is all of the
 [natural numbers](https://en.wikipedia.org/wiki/Natural_number). Sorry
 negative numbers.
 
 `[a-zA-Z]` is similar, but it means to match any character between
 lowercase 'a' and uppercase 'Z', so the line `[a-zA-Z][a-zA-Z0-9]+`
 means "match any sequence of numbers and letters, as long as the
-sequence starts with a letter".
+sequence starts with a letter and contains at least two
+characters". Sorry single-length variable names.
 
 You'll notice the care taken here to ensure there is no ambiguity
 between the `number` and `variableName` terminal definitions. Numbers
@@ -296,11 +298,14 @@ For case (1) we have:
 ```
 
 That matches our grammar! If you're very observant you may have gotten
-mad though. Shouldn't `int` have been matches by `variableName`? Most
-lexers (maybe all?) will take the first terminal that matches in order
-the terminals are listed. This is necessary to allow for special
+mad though. Shouldn't `int` have been matched by `variableName`?
+
+Most lexers (maybe all?) will take the first terminal that matches in
+order the terminals are listed. This is necessary to allow for special
 keywords (like "int") while also allowing for greater flexibility in
-the use of certain character sequences.
+the use of certain character sequences. In our made up lexer rules
+above we listed "int" before the `variableName` type, so "int" will
+match as a `variableType`.
 
 Let's look at input (2):
 
@@ -311,8 +316,8 @@ Let's look at input (2):
 "int" -> variableType
 ```
 
-That does **not* match our grammar, and thus our recognizer should say
-it doesn't recognize this string. In other words, this should be a
+That does **not** match our grammar, and thus our recognizer should
+say it doesn't recognize this string. In other words, this should be a
 compiler error.
 
 ## What Happens Next?
@@ -341,11 +346,16 @@ entities. That is due to the way we specified this particular grammar:
 ${variableType} ${variableName} ${equalsSign} ${number}
 ```
 
+Technically this is a tree with four leaf nodes, but we should quickly
+move on to real grammars, because the utility of this made up example
+is waning.
+
 ### Real Grammars
 
-This was all made up. Real grammars for programming languages are more
-rigorously defined. This is an entire field (or maybe *was*) of study
-deeply related to linguistics and early computer science
+All of the above grammar rules and syntax were made up, purely for
+illustrative purposes. Real grammars for programming languages are
+more rigorously defined. This is an entire field (or maybe *was*) of
+study deeply related to linguistics and early computer science
 foundations. As such, we will move on quickly and just note that most
 modern grammars are defined in something called
 [Backus–Naur form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form),
@@ -393,10 +403,16 @@ EOL : ';';
 That might look a little intimidating at first, but it's not too
 complicated. We are defining a top-level grammar rule `prog` and that
 `prog` will only parse strings that start with an `int_assignment`
-followed by the terminal `EOL` and finally by the terminal `EOF`. It
-is an annoying convention that a grammar "rule" that starts with a
+followed by the terminal `EOL` and finally by the terminal `EOF`.
+
+{{< notice notice-info >}}
+
+It is an annoying convention that a grammar "rule" that starts with a
 capital letter is *assumed* to be a terminal, i.e. handled by the
-lexer (:facepalm).
+lexer. This seems to be nearly universally assumed, though poorly
+documented :facepalm.
+
+{{< /notice >}}
 
 Recall that `prog` is the top-level rule or the *root* and thus if we
 think of the grammar as a tree, this root node has three children:
